@@ -2,7 +2,6 @@
 
 **Course:** Statistics for Engineers  
 **Assignment:** Inference Fundamentals (Homework 2)  
-**Group:** 31  
 **Author:** Michail Pettas
 
 ---

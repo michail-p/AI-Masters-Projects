@@ -1,4 +1,4 @@
-# Group 31 – Presentation
+# Presentation
 
 **Title:** Micro-breaks as a Solution to Productivity Slumps in a UX Design Firm  
 
