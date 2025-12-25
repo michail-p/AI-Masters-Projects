@@ -1,0 +1,5 @@
+<div class="controls" *ngIf="canCompare || canRestart">
+  <button *ngIf="canCompare" (click)="compare()" [disabled]="(loading$ | async) ?? false">Generate other</button>
+  <button *ngIf="canRestart && !isComparingScenarios" (click)="compareScenario()" class="ms-2" [disabled]="(loading$ | async) ?? false">Compare scenarios</button>
+  <button *ngIf="canRestart" (click)="restart()" class="ms-2" [disabled]="(loading$ | async) ?? false">Restart</button>
+</div>

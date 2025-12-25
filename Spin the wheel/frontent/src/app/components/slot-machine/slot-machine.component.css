@@ -1,0 +1,30 @@
+.slot-machine {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  gap: 20px;
+  height: 64px;
+  overflow: hidden;
+}
+
+.slot {
+  width: 150px;
+  height: 60px;
+  background-color: #cccccc83;
+  border: 2px solid #006c21;
+  overflow: hidden;
+  color: #006c21;
+  text-align: center;
+}
+
+.slot-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-item {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

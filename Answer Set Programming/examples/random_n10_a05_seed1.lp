@@ -1,0 +1,15 @@
+arg(a1).
+arg(a2).
+arg(a3).
+arg(a4).
+arg(a5).
+arg(a6).
+arg(a7).
+arg(a8).
+arg(a9).
+arg(a10).
+att(a2,a8).
+att(a8,a3).
+att(a10,a8).
+att(a1,a9).
+att(a4,a3).

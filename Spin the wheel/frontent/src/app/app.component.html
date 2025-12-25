@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <img class="logo" src="images/logo_white.png" alt="Spin the Wheel">
+</nav>
+<div class="container">
+  <div [class.row]="isComparing">
+    <div [class.col-6]="isComparing">
+      <app-slot-machine #slot1
+      [id]="1"
+      [restart]="restartFlag"
+      [isComparing]="isComparing"
+      [places]="selectPlaces$ | async"
+      [times]="selectTimes$ | async"
+      [genders]="selectGenders$ | async"
+      (resultVisibleChange)="onSlotResult($event)"></app-slot-machine>
+    </div>
+    <div *ngIf="isComparing" class="col-6">
+      <app-slot-machine #slot2
+      [id]="2"
+      [restart]="restartFlag"
+      [isComparing]="isComparing"
+      [places]="selectPlaces$ | async"
+      [times]="selectTimes$ | async"
+      [genders]="selectGenders$ | async"
+      (resultVisibleChange)="onSlotResult($event)"></app-slot-machine>
+    </div>
+  </div>
+  <div *ngIf="isComparingScenarios">
+    <app-compare-scenario [body]="compareScenarioBody"></app-compare-scenario>
+  </div>
+  <app-control-buttons [canCompare]="!isComparing && slot1Visible" [canRestart]="isComparing && slot1Visible && slot2Visible" [isComparingScenarios]="isComparingScenarios" (compareClicked)="onCompareClicked()" (restartClicked)="onRestartClicked()" (compareScenarioClicked)="onCompareScenarioClicked()"></app-control-buttons>
+</div>

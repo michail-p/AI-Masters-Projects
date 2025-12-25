@@ -1,0 +1,95 @@
+Introduction
+In this assignment, you will implement an Othello (Reversi) game engine that selects the best move for a given board position within a specified time limit. The engine must use Alpha-Beta pruning combined with Iterative Deepening Search (IDS) so that it can return the best move found before the time expires.
+
+The rules of the game can be found on WikipediaLinks to an external site.. The relevant concepts are covered in Lectures 2 and 3.
+
+Learning Outcomes:
+
+FSR2: Explain algorithms for informed and adversarial search, heuristics, and related concepts.
+FSR8: Implement efficient AI algorithms (e.g., game search) and evaluate their performance.
+FSR9: Apply appropriate AI methods to solve problems.
+Deadline
+See Examination dates on the left. Submit your report and code via the CS labresults system.
+
+Collaboration rules
+Work in pairs.
+Use the discussion forum to find a partner if needed.
+Plagiarism is strictly prohibited: Do not copy code from other students or external sources (except provided helper code).
+Do not use ChatGPT or similar tools to generate your solution.
+Programming language
+Preferred: Java or Python 3 (helper code provided).
+Other languages allowed, but you must implement all required functionality yourself.
+Discuss with TAs if you choose a different language.
+Assignment requirements
+Your program should:
+
+Read input:
+A position string of length 65: the first character is W or B (player to move), followed by 64 characters representing the board (E for empty, O for white, X for black). The first character refers to the upper left-hand corner, the second character refers to the second square from the left on the uppermost row, and so on. For example, the 10th character describes the second square from the left on the second row from the top.
+A time limit in seconds.
+Compute the best move:
+Use Alpha-Beta search with a heuristic evaluation function.
+Implement Iterative Deepening Search: start at depth 1, then 2, and so on, until the time limit is reached. Always keep track of the best move from the last fully completed depth.
+Output the move:
+Print the move in the format (row,column) (1-based indexing), or pass if no legal moves exist.
+Assumptions:
+White always starts → White = MAX, Black = MIN in Alpha-Beta.
+Requirements:
+Your engine must outperform the naive Alpha-Beta player (which uses a fixed depth of 7 and a simple piece-count heuristic) for time limits between 2 and 10 seconds, as both white and black.
+Always validate program inputs to prevent missing or incorrect values and ensure clear error messages are provided when needed.
+Helper code
+We provide a set of classes and interfaces in both Java and Python to help you get started:
+
+Othello: The main program. Currently uses a fixed depth to search for a move. Modify this file to implement Iterative Deepening Search (IDS) using the time limit argument.
+OthelloPosition: Represents the game state. You must complete the missing parts marked TODO (e.g., generating legal moves, applying moves, checking terminal states).
+OthelloAction: Represents a move.
+OthelloAlgorithm: Interface for search algorithms. Your AlphaBeta class should implement this.
+OthelloEvaluator: Interface for evaluation functions. You can start with the provided CountingEvaluator (counts pieces) and then design a better heuristic.
+AlphaBeta: Skeleton for Alpha-Beta search. You need to complete the search logic and add time control checks for IDS.
+othello.sh: A bash script to compile and run your program. Modify it if necessary to work with your solution (it should work as is for Java and Python). It takes three arguments: position_string time_limit do_compile.
+The helper code can be downloaded from git by running the following command in a Linux terminal: git clone git@git.cs.umu.se:courses/5dv243ht24.git. Alternatively, you can simply click on the link and download the file as a zip archive. Log in with your CS user (click on Computing Science SSO).
+
+Note that Python is much slower than Java, making it harder to win on time limits shorter than 2-3s, so you have to be extra smart with your heuristics when using Python. Implementing a bitboardLinks to an external site. in OthelloPosition could be a way to make the solution more efficient (using two 64-bit integers for black and white, respectively).
+
+Testing your program
+Scripts and code for testing your program can be found in the test_code folder on git.
+
+If you are not on a Linux machine, you can transfer files to your home folder on the CS Linux system using this interface: https://webapps.cs.umu.se/files/. Then, you can use https://webapps.cs.umu.se/terminal/ to connect to a Linux terminal on one of the servers (use itchy or scratchy). You can also use PuttyLinks to an external site. or similar terminal emulators. For a general guide to the computer systems at the department, see http://support.cs.umu.se/intro/filesystem
+
+On a Linux machine, do the following.
+
+Make sure the bash scripts 'othellostart.sh' and 'othello_naive.sh' are executable: chmod +x othellostart.sh othello_naive.sh.
+Run the 'othellostart.sh' script with three parameters, indicating which programs should play against each other and the time limit for them:
+bash othellostart.sh white_player black_player time_limit
+For instance, to play the test program against your own (with you as black) with a 5s time limit, you write bash othellostart.sh othello_naive.sh /path/to/your/othello.sh 5. 
+You can also play against a friend by giving the path to their script instead of othello_naive.sh (no peeking at their code, of course!).
+What to submit
+One group member submits via Labres and enters the other member's CS user name under Group selection. (NOTE: you cannot change group members after the first hand-in, even if it's just a test submission, so please make sure you do it correctly the first time.) 
+
+A report (PDF) 
+Your source code (no compiled files).
+The othello.sh script.
+Automatic testing will run when you submit your solution to verify that it meets the required specifications. Carefully review the test results and fix any issues before resubmitting. You can submit multiple times, and we will always grade the last submission received before the deadline.
+
+After the deadline, we will also perform offline tests to confirm that your program performs as expected and consistently outperforms the naive Othello implementation under different time limits.
+
+The report may be brief (try to keep it under 5 pages), but it must fulfill the following requirements:
+
+The report must have a title page including your names, CS user names (the one you use on labres, e.g. mai24abc), the course name (Artificial Intelligence), the course code (5DV243), and the assignment name.
+How your solution works.
+Describe the heuristics you used
+Describe how you implemented time control and IDS.
+Describe the algorithm for makeMove() 
+Show that you tested your solution thoroughly (e.g. a table with results from different runs)
+Both as black and white
+Using different time limits
+Provide an overview of your work progress and the challenges faced during program development, as this will help improve future assignments.
+Outline how tasks were divided within the group, specifying each member's responsibilities to ensure a shared understanding of the solution.
+Use clear, well-written English language, and do not include your source code in the report
+You can find a LaTeX report template on OverleafLinks to an external site. (optional). 
+The source code should align with the following:
+
+Sensibly comment the code, follow JavaDoc, PyDoc, or similar.
+Suitably structure your code, such that it is easy to follow what is going on
+Name classes, variables, methods, modules, etc., such that the names clearly describe their function and follow the specifications given above
+The code you submit should not include unused or unnecessary sections. Ensure that you understand every part of the code you submit.
+Before submitting, review the specification again to ensure nothing is missed!

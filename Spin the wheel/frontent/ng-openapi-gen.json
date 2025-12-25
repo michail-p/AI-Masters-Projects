@@ -1,0 +1,15 @@
+{
+  "input": "http://localhost:8080/v3/api-docs",
+  "output": "src/app/api",
+  "ignoreUnusedModels": true,
+  "service": {
+    "providedInRoot": true
+  },
+  "model": {
+    "useInterface": true
+  },
+  "httpOptions": {
+    "withCredentials": false,
+    "responseType": "json"
+  }
+}

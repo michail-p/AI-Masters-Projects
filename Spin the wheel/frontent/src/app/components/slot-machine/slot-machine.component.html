@@ -1,0 +1,18 @@
+<div class="slot-machine">
+  <div class="slot" *ngFor="let slot of slots">
+    <div class="slot-inner" [style.transition]="slot.duration + 'ms cubic-bezier(0.25, 1, 0.5, 1)'"
+      [style.transform]="slot.transform">
+      <div class="slot-item" *ngFor="let item of slot.list">
+        {{ formatItem(item) }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls" *ngIf="!resultVisible">
+  <button (click)="spin()" [disabled]="spinning || !canSpin">Spin!</button>
+</div>
+
+<div *ngIf="resultVisible">
+  <app-story [body]="body" [isComparing]="isComparing"></app-story>
+</div>

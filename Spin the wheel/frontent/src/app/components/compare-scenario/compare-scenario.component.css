@@ -1,0 +1,89 @@
+h2{
+  color: #006c21;
+  margin-top: 0px;
+}
+
+.container-border{
+  margin-top: 40px;
+  border: 2px solid #006c21;
+  border-radius: 20px;
+  padding: 30px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.text-wrapper {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.tooltip-icon {
+  padding-top: 10px;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+}
+
+.tooltip-icon .icon {
+  font-size: 15px;
+  background: white;
+  border: 1px solid #006c21;
+  color: #006c21;
+  border-radius: 50%;
+  padding: 4px 6px;
+  box-shadow: 0 2px 6px rgba(0,108,33,0.2);
+}
+
+.tooltip-box {
+  position: absolute;
+  bottom: 35px;
+  right: 0;
+  width: 220px;
+  border: 1px solid #006c21;
+  background: white;
+  color: #006c21;
+  border-radius: 6px;
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(0,108,33,0.25);
+  z-index: 10;
+  font-size: 14px;
+}
+
+.tooltip-box ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.tooltip-box li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.row.references {
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.row.references .col-6:first-child {
+  flex: 1;
+}
+
+.row.references .col-6:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.close-btn {
+  color: #006c21;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.green-link {
+  color: #006c21;
+}

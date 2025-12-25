@@ -1,0 +1,134 @@
+.row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.container-border{
+  margin-top: 40px;
+  border: 2px solid #006c21;
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.col-left {
+  flex: 0 0 45%;
+}
+
+.col-left img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.row.compare {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.row.compare .col-left,
+.row.compare .col-right {
+  flex: 0 0 auto;
+  width: 100%;
+}
+.row.compare .col-left {
+  text-align: center;
+}
+
+.row.compare .col-right {
+  text-align: justify;
+}
+
+.col-right {
+  text-align: justify;
+}
+
+.row.compare img {
+  max-width: 300px;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.text-wrapper {
+  position: relative;
+  padding-bottom: 20px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.tooltip-icon {
+  padding-top: 10px;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+}
+
+.tooltip-icon .icon {
+  font-size: 15px;
+  background: white;
+  border: 1px solid #006c21;
+  color: #006c21;
+  border-radius: 50%;
+  padding: 4px 6px;
+  box-shadow: 0 2px 6px rgba(0,108,33,0.2);
+}
+
+.tooltip-box {
+  position: absolute;
+  bottom: 35px;
+  right: 0;
+  width: 220px;
+  border: 1px solid #006c21;
+  background: white;
+  color: #006c21;
+  border-radius: 6px;
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(0,108,33,0.25);
+  z-index: 10;
+  font-size: 14px;
+}
+
+.tooltip-box ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.tooltip-box li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.row.references {
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.row.references .col-6:first-child {
+  flex: 1;
+}
+
+.row.references .col-6:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.close-btn {
+  color: #006c21;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.green-link {
+  color: #006c21;
+}

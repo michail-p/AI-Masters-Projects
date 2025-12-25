@@ -1,0 +1,25 @@
+<div *ngIf="selectGeneratedComparison$ | async as generatedText" class="container-border">
+  <h2>Scenario comparison</h2>
+  <div class="text-wrapper">
+    <span class="generated-text" [innerHTML]="generatedText.generatedText || '-'"></span>
+
+    <div class="tooltip-icon" *ngIf="generatedText.sources && generatedText.sources.length>0" (click)="toggleTooltip()">
+      <ng-icon name="iconoirArrowUpRight" size="15" class="icon"></ng-icon>
+    </div>
+    <div class="tooltip-box" *ngIf="isTooltipOpen && generatedText.sources && generatedText.sources.length>0">
+      <div class="row references">
+        <div class="col-6">
+          <b>References:</b>
+        </div>
+        <div class="col-6">
+          <button class="close-btn" (click)="toggleTooltip()">
+            <ng-icon name="iconoirXmark" size="20" class="icon"></ng-icon>
+          </button>
+        </div>
+      </div>
+      <ul *ngFor="let s of generatedText.sources">
+        <li><a class="green-link" [href]="s" target="_blank">{{ formatSourceLabel(s) }}</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

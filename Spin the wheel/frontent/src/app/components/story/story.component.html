@@ -1,0 +1,42 @@
+<div class="container-border">
+  <div class="row" [ngClass]="{ compare: isComparing }">
+    <div class="col-left">
+      <ng-container *ngIf="imageUrl$ | async as imageUrl">
+        <img [src]="imageUrl" alt="Generated Image">
+      </ng-container>
+    </div>
+    
+    <div class="col-right">
+      <ng-container *ngIf="selectGeneratedText$ | async as generatedText; else waiting">
+        <div class="text-wrapper">
+          <span class="generated-text" [innerHTML]="generatedText.generatedText || '-'" ></span>
+
+          <div class="tooltip-icon" *ngIf="generatedText.sources && generatedText.sources.length>0" (click)="toggleTooltip()">
+            <ng-icon name="iconoirArrowUpRight" size="15" class="icon"></ng-icon>
+          </div>
+          <div class="tooltip-box" *ngIf="isTooltipOpen && generatedText.sources && generatedText.sources.length>0">
+            <div class="row references">
+              <div class="col-6">
+                <b>References:</b>
+              </div>
+              <div class="col-6">
+                <button class="close-btn" (click)="toggleTooltip()">
+                  <ng-icon name="iconoirXmark" size="20" class="icon"></ng-icon>
+                </button>
+              </div>
+            </div>
+            <ul *ngFor="let s of generatedText.sources">
+              <li><a class="green-link" [href]="s" target="_blank">{{ formatSourceLabel(s) }}</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </ng-container>
+      <ng-template #waiting>
+        <div class="text-wrapper">
+          <span class="generated-text">Connecting...</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
