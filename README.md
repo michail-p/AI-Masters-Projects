@@ -13,7 +13,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 | [Othello](Othello/) | Game AI engine with Alpha-Beta pruning | Python, Minimax, IDS |
 | [Spin the Wheel](Spin%20the%20wheel/) | Full-stack web application prototype | Spring Boot, Angular, Firebase |
 | [Statistics](Statistics/) | Statistical inference analysis | R, tidyverse |
-s
+
 ---
 
 ## 📂 Project Details
