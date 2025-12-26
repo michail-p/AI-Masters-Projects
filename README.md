@@ -76,7 +76,6 @@ Statistical analysis investigating the impact of structured micro-breaks on work
 ## 👤 Author
 
 **Michail Pettas**  
-CS Username: mai25mps  
 Umeå University – AI Masters Program
 
 ---
