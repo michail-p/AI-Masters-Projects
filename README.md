@@ -11,6 +11,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 | [Answer Set Programming](Answer%20Set%20Programming/) | Logic programming for argumentation frameworks | ASP, Clingo, Python |
 | [ML - Fashion Article Classification](ML%20-%20Fashion%20Article%20Classification/) | Image classification using k-NN and neural networks | Python, scikit-learn, TensorFlow |
 | [Othello](Othello/) | Game AI engine with Alpha-Beta pruning | Python, Minimax, IDS |
+| [Reinforcement Learning](Reinforcement%20Learing/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
 | [Spin the Wheel](Spin%20the%20wheel/) | Full-stack web application prototype | Spring Boot, Angular, Firebase |
 | [Statistics](Statistics/) | Statistical inference analysis | R, tidyverse |
 
@@ -45,6 +46,16 @@ A competitive Othello (Reversi) game engine featuring:
 - Transposition tables and move ordering optimizations
 - Time-controlled search within specified limits
 
+### 🤖 [Reinforcement Learning](Reinforcement%20Learing/)
+
+**Course:** Reinforcement Learning
+
+Hands-on reinforcement learning project with two parts:
+
+- Multi-armed bandit evaluation against an epsilon-greedy reference baseline
+- Multi-agent Pong (`PongDuel-v0`) using a tabular Q-learning style agent
+- Optional rendering, recording, and GIF export for episode analysis
+
 ### 🎰 [Spin the Wheel](Spin%20the%20wheel/)
 
 **Course:** Software Engineering / Prototype Development
@@ -70,6 +81,7 @@ Statistical analysis investigating the impact of structured micro-breaks on work
 - **Node.js 18+** (for Angular frontend)
 - **R 4.x** (for Statistics project)
 - **Clingo 5.x** (for ASP project)
+- **Gym/ma-gym + Pillow** (for RL Pong environment and GIF export)
 
 ---
 
