@@ -9,7 +9,8 @@ A collection of academic projects completed during the AI Masters program at Ume
 | Project | Description | Technologies |
 |---------|-------------|--------------|
 | [Answer Set Programming](Answer%20Set%20Programming/) | Logic programming for argumentation frameworks | ASP, Clingo, Python |
-| [ML - Fashion Article Classification](ML%20-%20Fashion%20Article%20Classification/) | Image classification using k-NN and neural networks | Python, scikit-learn, TensorFlow |
+| [Machine Learning 1](Machine%20Learning%201/) | Supervised learning assignment with classification and regression | Python, scikit-learn, Jupyter |
+| [ML - Fashion Article Classification](Fashion%20Article%20Classification/) | Image classification using k-NN and neural networks | Python, scikit-learn, TensorFlow |
 | [Othello](Othello/) | Game AI engine with Alpha-Beta pruning | Python, Minimax, IDS |
 | [Reinforcement Learning](Reinforcement%20Learing/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
 | [Spin the Wheel](Spin%20the%20wheel/) | Full-stack web application prototype | Spring Boot, Angular, Firebase |
@@ -25,7 +26,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 
 Implementation of argumentation semantics using Answer Set Programming (ASP). Includes conflict-free sets, admissible sets, stable extensions, and preferred extensions. Features both declarative ASP encodings and an imperative Python solver for performance comparison.
 
-### 👕 [ML - Fashion Article Classification](ML%20-%20Fashion%20Article%20Classification/)
+### 👕 [ML - Fashion Article Classification](Fashion%20Article%20Classification/)
 
 **Course:** Machine Learning
 
@@ -34,6 +35,16 @@ Classification of fashion items from the Fashion-MNIST dataset using:
 - Custom k-Nearest Neighbors (k-NN) implementation
 - Dense Neural Network (Multilayer Perceptron)
 - Hyperparameter tuning and model evaluation
+
+### 📘 [Machine Learning 1](Machine%20Learning%201/)
+
+**Course:** Machine Learning (5DV238)
+
+Foundational supervised learning assignment covering:
+
+- Classification on the Breast Cancer Wisconsin (Diagnostic) dataset
+- Regression on the California Housing dataset
+- Model training, evaluation, and comparison using scikit-learn
 
 ### ♟️ [Othello](Othello/)
 
