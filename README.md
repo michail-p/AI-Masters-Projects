@@ -7,10 +7,11 @@ A collection of academic projects completed during the AI Masters program at Ume
 ## 📁 Projects Overview
 
 | Project | Description | Technologies |
-|---------|-------------|--------------|
+| ------- | ----------- | ------------ |
 | [Answer Set Programming](Answer%20Set%20Programming/) | Logic programming for argumentation frameworks | ASP, Clingo, Python |
 | [Machine Learning 1](Machine%20Learning%201/) | Supervised learning assignment with classification and regression | Python, scikit-learn, Jupyter |
 | [Machine Learning 2](Machine%20Learning%202/) | Neural networks, PCA, and clustering across California Housing, Wine, and MNIST | Python, scikit-learn, TensorFlow, Jupyter |
+| [Machine Learning 3](Machine%20Learning%203/) | Human activity recognition with classical models and raw-signal deep learning | Python, scikit-learn, TensorFlow, Jupyter |
 | [Fashion Article Classification](Fashion%20Article%20Classification/) | Image classification using k-NN and neural networks | Python, scikit-learn, TensorFlow |
 | [Othello](Othello/) | Game AI engine with Alpha-Beta pruning | Python, Minimax, IDS |
 | [Reinforcement Learning](Reinforcement%20Learing/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
@@ -52,6 +53,12 @@ Foundational supervised learning assignment covering:
 **Course:** Machine Learning
 
 Second machine learning assignment covering neural network regression on California Housing, PCA on Wine and MNIST, and custom/scikit-learn K-Means clustering analysis.
+
+### 📙 [Machine Learning 3](Machine%20Learning%203/)
+
+**Course:** Machine Learning (5DV238)
+
+Third machine learning assignment focused on human activity recognition using the UCI HAR smartphone dataset. The project compares classical models on engineered features with raw inertial-signal experiments, including a 1D CNN for sequence modeling.
 
 ### ♟️ [Othello](Othello/)
 
