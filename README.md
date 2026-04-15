@@ -9,6 +9,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 | Project | Description | Technologies |
 | ------- | ----------- | ------------ |
 | [Answer Set Programming](Answer%20Set%20Programming/) | Logic programming for argumentation frameworks | ASP, Clingo, Python |
+| [Deep Learning 1](Deep%20Learning%201/) | Facial emotion recognition with CNNs on AffectNet | Python, TensorFlow, Keras |
 | [Machine Learning 1](Machine%20Learning%201/) | Supervised learning assignment with classification and regression | Python, scikit-learn, Jupyter |
 | [Machine Learning 2](Machine%20Learning%202/) | Neural networks, PCA, and clustering across California Housing, Wine, and MNIST | Python, scikit-learn, TensorFlow, Jupyter |
 | [Machine Learning 3](Machine%20Learning%203/) | Human activity recognition with classical models and raw-signal deep learning | Python, scikit-learn, TensorFlow, Jupyter |
@@ -17,6 +18,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 | [Reinforcement Learning](Reinforcement%20Learing/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
 | [Spin the Wheel](Spin%20the%20wheel/) | Full-stack web application prototype | Spring Boot, Angular, Firebase |
 | [Statistics](Statistics/) | Statistical inference analysis | R, tidyverse |
+| [LLM Backend](LLM%20Backend/) | FastAPI backend for educational game with LLM-powered hints | Python, FastAPI, Hugging Face |
 
 ---
 
@@ -27,6 +29,19 @@ A collection of academic projects completed during the AI Masters program at Ume
 **Course:** AI-2 (5DV181) – Logic Programming
 
 Implementation of argumentation semantics using Answer Set Programming (ASP). Includes conflict-free sets, admissible sets, stable extensions, and preferred extensions. Features both declarative ASP encodings and an imperative Python solver for performance comparison.
+
+### 😃 [Deep Learning 1](Deep%20Learning%201/)
+
+**Course:** Deep Learning
+
+Facial emotion recognition using a Convolutional Neural Network (CNN) trained on the AffectNet dataset. Includes:
+
+- Custom CNN architecture implemented in Keras
+- Training and validation on AffectNet emotion data
+- Visualization of loss and accuracy curves
+- Provided environment YAML for reproducibility
+
+Model file: `affectnet_emotion_cnn.keras`
 
 ### 👕 [Fashion Article Classification](Fashion%20Article%20Classification/)
 
@@ -120,3 +135,18 @@ Umeå University – AI Masters Program
 ## 📄 License
 
 These projects are academic assignments. Please respect academic integrity policies if referencing this work.
+
+---
+
+### 🤖 [LLM Backend](LLM%20Backend/)
+
+**Standalone Project**
+
+Backend API for an educational game platform, built with FastAPI. Provides endpoints for curriculum, game logic, user modeling, and AI-powered hint generation using large language models (LLMs) via Hugging Face. Designed to support a frontend for interactive learning experiences.
+
+- RESTful API for game and curriculum management
+- Integration with Llama-3-8B-instruct via Hugging Face Inference API
+- In-memory session storage for local development
+- Docker and local run support
+
+See project README for API details and usage instructions.

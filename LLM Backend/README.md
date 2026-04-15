@@ -1,15 +1,19 @@
-# Backend (FastAPI)
+# Project Purpose
 
-Fresh backend for the frontend API at `http://localhost:8000/api/v1`.
+This backend serves as the core API for an educational game platform, providing endpoints to manage curriculum data, game sessions, user progress, and AI-powered assistance. It is designed to support a frontend application by handling game logic, user interactions, and integration with large language models for generating hints and feedback. The backend enables interactive learning experiences by orchestrating gameplay, tracking user performance, and delivering adaptive guidance.
+
+## Backend (FastAPI)
+
+Backend for the frontend API at `http://localhost:8000/api/v1`.
 
 ## Run locally
 
 From workspace root:
 
 ```powershell
-C:/Users/vavyl/Desktop/dais-active-learning/.venv/Scripts/python.exe -m pip install -r backend/requirements.txt
+python.exe -m pip install -r backend/requirements.txt
 Set-Location backend
-C:/Users/vavyl/Desktop/dais-active-learning/.venv/Scripts/python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
+python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 Open health check:
