@@ -1,0 +1,6 @@
+name: 5dv236vt26
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+prefix: /pkg/anaconda/2024.2/envs/5dv236vt26

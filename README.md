@@ -9,7 +9,8 @@ A collection of academic projects completed during the AI Masters program at Ume
 | Project | Description | Technologies |
 | ------- | ----------- | ------------ |
 | [Answer Set Programming](Answer%20Set%20Programming/) | Logic programming for argumentation frameworks | ASP, Clingo, Python |
-| [Deep Learning 1](Deep%20Learning%201/) | Facial emotion recognition with CNNs on AffectNet | Python, TensorFlow, Keras |
+| [Deep Learning 1](Deep%20Learning%201/) | CNN-based facial emotion recognition on AffectNet with training and evaluation scripts | Python, TensorFlow, Keras |
+| [Deep Learning 2](Deep%20Learning%202/) | Manual backpropagation and gradient descent in JAX for regression and classification models | Python, JAX, matplotlib |
 | [Machine Learning 1](Machine%20Learning%201/) | Supervised learning assignment with classification and regression | Python, scikit-learn, Jupyter |
 | [Machine Learning 2](Machine%20Learning%202/) | Neural networks, PCA, and clustering across California Housing, Wine, and MNIST | Python, scikit-learn, TensorFlow, Jupyter |
 | [Machine Learning 3](Machine%20Learning%203/) | Human activity recognition with classical models and raw-signal deep learning | Python, scikit-learn, TensorFlow, Jupyter |
@@ -37,11 +38,23 @@ Implementation of argumentation semantics using Answer Set Programming (ASP). In
 Facial emotion recognition using a Convolutional Neural Network (CNN) trained on the AffectNet dataset. Includes:
 
 - Custom CNN architecture implemented in Keras
-- Training and validation on AffectNet emotion data
+- Four-class emotion recognition: Happy, Sad, Surprised, and Mad
+- Training, validation, and test evaluation on AffectNet emotion data
 - Visualization of loss and accuracy curves
 - Provided environment YAML for reproducibility
 
 Model file: `affectnet_emotion_cnn.keras`
+
+### 🧮 [Deep Learning 2](Deep%20Learning%202/)
+
+**Course:** Deep Learning (5DV236)
+
+Backpropagation assignment implemented with JAX and the course `jaxon` library. The project focuses on composing layer Jacobians into full gradients and then training models with manual gradient descent.
+
+- Manual backpropagation through model layers
+- Gradient descent for a linear regression example
+- Gradient descent for a feed-forward multiclass classifier
+- Learning-curve generation and written report
 
 ### 👕 [Fashion Article Classification](Fashion%20Article%20Classification/)
 

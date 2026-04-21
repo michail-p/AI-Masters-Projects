@@ -1,0 +1,189 @@
+﻿— Assignment 2 —
+The Backpropagation Algorithm
+
+Tommy Löfstedt, Polina Kurtser, and Brendan Michael
+
+Deadline on April 28, 2026
+
+Now you probably understand conceptually how gradient descent works
+(if not yet, the slides from Lecture 5 might help), but how do we actually
+get a hold of the gradient? That should hopefully become more clear after
+this assignment.
+
+We have created a small machine learning library based on Jax, that is
+able to automatically compute the Jacobians of each layer separately (deriva-
+tives of the layer outputs with respect to the layer inputs and layer parame-
+ters). However, it is currently not able to jointly compute the partial deriva-
+tives of the loss function with respect to each layer’s inputs and parameters
+in the hypothesis function. This is now your task.
+
+We provide the machine learning library, jaxon, and a skeleton Python
+file in which you need to implement the backpropagation step of the back-
+propagation algorithm. These files are found in the provided zip file. Hint:
+To solve this assignment efficiently, look up the function jax.numpy.einsum.
+
+We also provide two small datasets, one for regression (in the numpy
+file regression_data.npz) and one for classification (in the numpy file
+classification_data.npz). Once you have implemented the backpropa-
+gation step, and thus have all partial derivatives, you should first setup a
+linear regression model with a mean squared loss function and train it using
+your derivatives on the regression data; second, you should setup a small neu-
+ral network with at least one hidden layer, with a categorical cross-entropy
+loss, and train it using your derivatives on the classification data. For this
+you need to implement the descent step of gradient descent, e.g.,
+
+(s+1) (s)
+W (
+
+l = Wl − ρ∇ (s)ℓ(θ s)),
+Wl
+
+1
+
+
+
+where (s)
+Wl would be, e.g., dense weights in layer l at iteration s, the ρ is
+
+the learning rate, ∇ (s)ℓ is the gradient of the loss with respect to the dense
+Wl
+
+weights in layer l, and θ(s) represents all model parameters. The descent step
+needs to be taken for all model parameters like this.
+
+You need to implement the backward method in the provided skeleton
+Models. It should return a dictionary of dictionaries in the following format:
+
+• The dictionary contains an entry for each layer, e.g., grad["dense1"]
+
+– The loss function’s entry need to have the key "loss", e.g., grad[
+"loss"]
+
+– The layers’s entries need to have as key their given names (note
+that you build up your hypothesis function in Example 2 using
+Hypothesis.add("name", layer))
+
+• Each layer’s entry is a dictionary with partial derivatives for its weights
+and inputs
+
+– The key for the partial derivatives with respect to the layer in-
+puts need to be called "inputs" and be in a list, e.g., grad[
+"dense1"]["inputs"] would be a list.
+
+– The key for the partial derivatives with respect to the layer’s
+weights have the names given to those weights, e.g., grad[
+"dense1"]["W"]. Note: This is a Jax array for model weights,
+and not a list as with the inputs.
+
+Note: This is the same format as the model parameters are stored in, which
+you find in model.params. This may be helpful when you implement the gra-
+dient descent steps as well. The test function, jaxon.test.model_backward(
+model, X, Y), assumes this format, and will not work unless it is correct.
+
+It is ok to hard-code the backward steps in your solution (with respect
+to the number of layers and their names), but it is a very good exercise to
+make it more general. Can you make your solution work even for arbitrary
+compute graphs?
+
+Your implementation will likely work in most recent versions of Jax, but
+it should run in the provided environment on the CS systems to pass the
+assignment. Jax is installed with the provided Anaconda environment, which
+you activate as follows:
+
+2
+
+
+
+$ conda-activate
+
+$ conda activate 5dv236vt26
+
+Jax may tell you that it can’t find a GPU. If so, that’s not a problem for this
+assignment, as you don’t need a GPU here.
+
+You must implement the backpropagation steps yourselves. It is not allowed
+to use someone else’s implementation, and you cannot use Jax to do it auto-
+matically for you. I.e., you can not use autodiff (e.g., jax.grad(...)), but
+need to implement the Jacobian–vector products yourself. Please also take
+note of the course’s “AI” policy, which is stated on the course web page1.
+
+What to hand in:
+
+• The skeleton file, filled in with your implementation of backward and
+gradient descent for the two examples.
+
+• A short report in PDF format (follow the template given below) that
+contains:
+
+– A short description of your solution (about 1/3 to 1/2 page).
+– Figures with the loss curves for your training loss of the two mod-
+
+els.
+
+Don’t hesitate to contact us, either through email, the course web discussion
+board, or at the lectures, if you have any questions!
+
+Good luck, and have fun!
+
+1https://www.canvas.umu.se/courses/20985
+
+3
+
+
+
+Assignment 2: Report Template
+Student Name:
+CS username:
+
+Solution Description
+Give a short description (about 1/3 to 1/2 page) of your solution. Include
+the following in your description:
+
+• An outline of how the backpropagation step was implemented.
+
+• An outline of how you implemented gradient descent.
+
+Learning Curves
+
+Gradient Descent on a Linear Regression Model
+
+20
+
+15
+
+10
+
+5
+
+0
+25 50 75 100 125 150 175 200
+
+Epoch
+
+Figure 1: Sample learning curve for the training loss of linear regression.
+
+4
+
+Loss value
+
+
+
+Gradient Descent on a Neural Network for Multiclass Classification
+13
+
+12
+
+11
+
+10
+
+9
+
+25 50 75 100 125 150 175 200
+Epoch
+
+Figure 2: Sample learning curve for the training loss of the neural network.
+
+5
+
+Loss value
