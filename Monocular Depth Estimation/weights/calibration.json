@@ -1,0 +1,11 @@
+{
+  "disparity_a": 1.4625822718456092,
+  "disparity_b": -0.3781835070241854,
+  "absrel_before": 0.3055315315723419,
+  "absrel_after": 0.1545184090686997,
+  "delta1_before": 0.015494624580433087,
+  "delta1_after": 0.7867230946392473,
+  "n_pixels": 15736167,
+  "min_depth_m": 0.3,
+  "max_depth_m": 5.0
+}

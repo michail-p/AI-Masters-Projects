@@ -1,0 +1,14 @@
+scikit-learn
+pandas
+xgboost
+fastapi
+uvicorn
+mlflow==3.11.0rc1
+dvc
+evidently==0.4.33
+prometheus-client
+pytest
+flake8
+pydantic
+python-multipart
+httpx

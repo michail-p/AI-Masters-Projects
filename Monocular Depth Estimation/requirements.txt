@@ -1,0 +1,15 @@
+# Fusion-server runtime. Torch is the CUDA 12.4 build, so this file points pip at
+# the PyTorch wheel index for it; everything else resolves from PyPI.
+# DA3's own runtime deps are not here — they come from its repo (see README).
+--extra-index-url https://download.pytorch.org/whl/cu124
+
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+ultralytics==8.4.56
+opencv-python==4.13.0.92
+numpy==2.4.4
+fastapi==0.136.3
+uvicorn[standard]==0.48.0
+bleak==3.0.2
+cryptography==48.0.0
+gradio==6.15.1   # only needed for --gradio

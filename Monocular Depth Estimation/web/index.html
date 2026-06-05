@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>CarRobot</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
+               font: 13px/1.2 ui-monospace, Menlo, Consolas, monospace; color: #fff;
+               -webkit-user-select: none; user-select: none; }
+  #stage { position: fixed; inset: 0; }
+  video { display: none; }
+  #view { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; }
+  .bar { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 10px;
+         padding: 10px; background: rgba(20,20,20,.55); backdrop-filter: blur(8px); }
+  #top { top: 0; } #bottom { bottom: 0; }
+  #title { font-weight: 700; letter-spacing: .5px; }
+  button { border: 0; border-radius: 7px; padding: 8px 14px; font: inherit; font-weight: 700; }
+  #go { margin-left: auto; background: #34c759; color: #000; min-width: 64px; }
+  #go.on { background: #ff3b30; color: #fff; }
+  #go:disabled { opacity: .5; }
+  #status { opacity: .85; }
+  #cmd { margin-left: auto; font-weight: 700; color: #000; padding: 3px 9px; border-radius: 4px;
+         background: #888; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="video" playsinline muted></video>
+  <canvas id="view"></canvas>
+  <div id="top" class="bar">
+    <span id="title">CarRobot</span>
+    <button id="go">Start</button>
+  </div>
+  <div id="bottom" class="bar">
+    <span id="status">idle</span>
+    <span id="robot">robot —</span>
+    <span id="cmd">CMD —</span>
+  </div>
+</div>
+<script>
+const video = document.getElementById("video");
+const view = document.getElementById("view");
+const vctx = view.getContext("2d");
+const go = document.getElementById("go");
+const statusEl = document.getElementById("status");
+const robotEl = document.getElementById("robot");
+const cmdEl = document.getElementById("cmd");
+const grab = document.createElement("canvas");   // holds the upright "model frame" we send
+const gctx = grab.getContext("2d");
+
+const CMD_COLOR = { FORWARD: "#34c759", LEFT: "#ffd60a", RIGHT: "#ffd60a" };
+const MIN_INTERVAL = 1000 / 30;   // cap upload at 30 fps
+const SEND_W = 640;               // downscale before sending — DA3 resizes to 280×504 and YOLO to 640 internally, so a bigger frame is pure wasted bandwidth (and the throttle)
+
+let stream, ws, running = false, lastSend = 0;
+let dets = [], frameW = 0, frameH = 0;
+
+go.onclick = () => running ? stop() : start();
+
+// Reconnect on drop (server restart / Wi-Fi blip) for as long as we're running.
+// The send loop already gates on ws.readyState, so it idles cleanly while we're down.
+function connectWS() {
+  ws = new WebSocket(`wss://${location.host}/stream`);
+  ws.onopen = () => setStatus("connected");
+  ws.onerror = () => setStatus("ws error");
+  ws.onclose = () => { ws = null; if (running) { setStatus("reconnecting…"); setTimeout(connectWS, 1000); } };
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.detections) dets = msg.detections;
+    if (msg.command) setCmd(msg.command);
+    if (msg.robot) setRobot(msg.robot);
+  };
+}
+
+// Pick the main back lens, not the ultra-wide/tele. Labels only appear after camera
+// permission, so this is called after the first getUserMedia. Returns null if no phone
+// reports a usable label (then we keep whatever `environment` gave us).
+async function mainBackCameraId() {
+  const cams = (await navigator.mediaDevices.enumerateDevices())
+    .filter((d) => d.kind === "videoinput" && /back|rear/i.test(d.label));
+  const avoid = /ultra|tele|depth|truedepth|fisheye|mono/i;
+  return (cams.find((d) => !avoid.test(d.label)) || {}).deviceId || null;
+}
+
+async function start() {
+  go.disabled = true;
+  try {
+    const vid = (extra) => ({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, ...extra }, audio: false });
+    // Grab a back camera (also unlocks device labels), then re-pick the MAIN lens —
+    // some phones hand `environment` the ultra-wide, whose wide FOV + distortion wreck
+    // detection and throw off the metric-depth calibration.
+    stream = await navigator.mediaDevices.getUserMedia(vid({ facingMode: { ideal: "environment" } }));
+    const mainId = await mainBackCameraId();
+    if (mainId && stream.getVideoTracks()[0].getSettings().deviceId !== mainId) {
+      stream.getTracks().forEach((t) => t.stop());
+      stream = await navigator.mediaDevices.getUserMedia(vid({ deviceId: { exact: mainId } }));
+    }
+    setStatus("cam: " + (stream.getVideoTracks()[0].label || "default"));
+    video.srcObject = stream;
+    await video.play();
+
+    running = true;
+    connectWS();
+    go.textContent = "Stop"; go.classList.add("on");
+    setStatus("starting…");
+    requestAnimationFrame(loop);
+  } catch (err) {
+    setStatus("err: " + err.message);
+  }
+  go.disabled = false;
+}
+
+function stop() {
+  running = false;
+  if (ws) { ws.close(); ws = null; }
+  if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+  dets = []; vctx.clearRect(0, 0, view.width, view.height);
+  go.textContent = "Start"; go.classList.remove("on");
+  setStatus("idle"); setCmd("—"); robotEl.textContent = "robot —"; robotEl.style.color = "";
+}
+
+// Draw the camera into `grab` — both what we encode/send and what we preview, so the
+// overlay always aligns. Hold the phone landscape; a portrait frame is flagged below.
+function renderModelFrame() {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if (!vw) return false;
+  const s = Math.min(1, SEND_W / Math.max(vw, vh));   // cap longest side at SEND_W
+  frameW = Math.round(vw * s); frameH = Math.round(vh * s);
+  if (grab.width !== frameW) grab.width = frameW;
+  if (grab.height !== frameH) grab.height = frameH;
+  gctx.drawImage(video, 0, 0, frameW, frameH);
+  return true;
+}
+
+function loop(now) {
+  if (!running) return;
+  if (renderModelFrame()) {
+    drawPreview();
+    // Drop the frame if the socket is still flushing the previous one (slow Wi-Fi).
+    // Send raw JPEG bytes (binary) — no base64 inflation, no JSON; toBlob encodes off the main thread.
+    if (now - lastSend >= MIN_INTERVAL && ws && ws.readyState === 1 && ws.bufferedAmount === 0) {
+      lastSend = now;
+      grab.toBlob((b) => { if (b && ws && ws.readyState === 1) ws.send(b); }, "image/jpeg", 0.5);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+// Preview = the exact model frame, letterboxed; bboxes drawn in the same space.
+function drawPreview() {
+  const dpr = devicePixelRatio || 1;
+  const cw = view.clientWidth, ch = view.clientHeight;
+  if (view.width !== cw * dpr || view.height !== ch * dpr) { view.width = cw * dpr; view.height = ch * dpr; }
+  vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  vctx.clearRect(0, 0, cw, ch);
+
+  const s = Math.min(cw / frameW, ch / frameH);
+  const dw = frameW * s, dh = frameH * s, ox = (cw - dw) / 2, oy = (ch - dh) / 2;
+  vctx.drawImage(grab, 0, 0, frameW, frameH, ox, oy, dw, dh);
+
+  // Model was trained on landscape; a portrait frame silently kills detection.
+  if (frameW < frameH) {
+    vctx.fillStyle = "#ff3b30"; vctx.fillRect(0, ch / 2 - 18, cw, 36);
+    vctx.fillStyle = "#fff"; vctx.textAlign = "center"; vctx.font = "bold 16px ui-monospace, monospace";
+    vctx.fillText("⚠ turn the phone LANDSCAPE (auto-rotate on)", cw / 2, ch / 2 + 5);
+    vctx.textAlign = "left";
+  }
+
+  vctx.lineWidth = 2; vctx.strokeStyle = "#34c759"; vctx.font = "bold 13px ui-monospace, monospace";
+  for (const d of dets) {
+    const [x1, y1, x2, y2] = d.bbox;
+    const rx = x1 * s + ox, ry = y1 * s + oy;
+    vctx.strokeRect(rx, ry, (x2 - x1) * s, (y2 - y1) * s);
+    const dist = d.distance_m != null ? d.distance_m.toFixed(2) + "m" : "?";
+    const text = `${d.name} ${Math.round(d.conf * 100)}% @ ${dist}`;
+    vctx.fillStyle = "#34c759"; vctx.fillRect(rx, ry - 16, vctx.measureText(text).width + 8, 16);
+    vctx.fillStyle = "#000"; vctx.fillText(text, rx + 4, ry - 4);
+  }
+}
+
+const setStatus = (s) => statusEl.textContent = s;
+const ROBOT = {
+  ready:    ["● robot ready", "#34c759"],
+  scanning: ["● robot: searching…", "#ff9f0a"],
+  bt_off:   ["⚠ laptop Bluetooth off", "#ff3b30"],
+  off:      ["robot: BLE off", "#8e8e93"],
+};
+function setRobot(s) { const r = ROBOT[s] || ROBOT.off; robotEl.textContent = r[0]; robotEl.style.color = r[1]; }
+function setCmd(label) {
+  cmdEl.textContent = "CMD " + label;
+  cmdEl.style.background = CMD_COLOR[label.split(" ")[0]] || "#888";
+  cmdEl.style.color = "#000";
+}
+
+addEventListener("beforeunload", stop);
+</script>
+</body>
+</html>
