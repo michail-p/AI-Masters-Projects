@@ -3,7 +3,7 @@ pandas
 xgboost
 fastapi
 uvicorn
-mlflow==3.11.0rc1
+mlflow==3.11.1
 dvc
 evidently==0.4.33
 prometheus-client
