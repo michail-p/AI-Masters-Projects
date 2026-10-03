@@ -25,7 +25,7 @@ Spin the wheel/
 │   │   └── test/               # Unit tests
 │   └── mvnw, mvnw.cmd          # Maven wrapper
 │
-└── frontent/                   # Angular SPA
+└── frontend/                   # Angular SPA
     ├── package.json            # npm dependencies
     ├── angular.json            # Angular CLI config
     ├── ng-openapi-gen.json     # OpenAPI code generator config
@@ -97,7 +97,7 @@ The backend starts at `http://localhost:8080`
 ### Frontend Setup
 
 ```bash
-cd frontent
+cd frontend
 
 # Install dependencies
 npm install
@@ -113,7 +113,7 @@ The frontend starts at `http://localhost:4200`
 After backend is running:
 
 ```bash
-cd frontent
+cd frontend
 npm run stubs
 ```
 
@@ -180,7 +180,7 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar
 ### Frontend
 
 ```bash
-cd frontent
+cd frontend
 npm run build
 # Output in dist/ folder
 ```
@@ -199,7 +199,7 @@ cd backend
 ### Frontend Tests
 
 ```bash
-cd frontent
+cd frontend
 npm test
 ```
 

@@ -19,7 +19,7 @@ A collection of academic projects completed during the AI Masters program at Ume
 | [Machine Learning 3](Machine%20Learning%203/) | Human activity recognition with classical models and raw-signal deep learning | Python, scikit-learn, TensorFlow, Jupyter |
 | [Fashion Article Classification](Fashion%20Article%20Classification/) | Image classification using k-NN and neural networks | Python, scikit-learn, TensorFlow |
 | [Othello](Othello/) | Game AI engine with Alpha-Beta pruning | Python, Minimax, IDS |
-| [Reinforcement Learning](Reinforcement%20Learing/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
+| [Reinforcement Learning](Reinforcement%20Learning/) | Bandit benchmarking and multi-agent Pong with Q-learning | Python, pytest, ma-gym |
 | [Spin the Wheel](Spin%20the%20wheel/) | Full-stack web application prototype | Spring Boot, Angular, Firebase |
 | [Statistics](Statistics/) | Statistical inference analysis | R, tidyverse |
 | [LLM Backend](LLM%20Backend/) | FastAPI backend for educational game with LLM-powered hints | Python, FastAPI, Hugging Face |
@@ -138,7 +138,7 @@ A competitive Othello (Reversi) game engine featuring:
 - Transposition tables and move ordering optimizations
 - Time-controlled search within specified limits
 
-### 🤖 [Reinforcement Learning](Reinforcement%20Learing/)
+### 🤖 [Reinforcement Learning](Reinforcement%20Learning/)
 
 **Course:** Reinforcement Learning
 
