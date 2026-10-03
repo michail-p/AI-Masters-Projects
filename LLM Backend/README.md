@@ -92,10 +92,10 @@ The help endpoint (`POST /api/v1/agent/help`) uses:
 - `AI-Sweden-Models/Llama-3-8B-instruct:featherless-ai`
 - via OpenAI-compatible API base: `https://router.huggingface.co/v1`
 
-Token handling (current implementation):
+Token handling:
 
-- `HF_TOKEN` is currently hardcoded in `backend/main.py`.
-- No `.env` token setup is required for local run.
+- `main.py` reads `HF_TOKEN` from the environment, loading a `.env` file in this folder if one exists.
+- Set it before starting the server; the committed `.env` holds an empty placeholder.
 
 Fallback behavior:
 
