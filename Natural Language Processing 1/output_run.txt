@@ -1,0 +1,491 @@
+
+==============================================================================
+TASK 1: Tokenization with spaCy
+==============================================================================
+Number of tokens: 46
+
+['On', 'Jan.', '15', ',', '2024', ',', 'Dr.', 'Smith', "'s", 'research', 'on', 'AI', '-', 'generated', 'art', 'sparked', 'debates', 'on', "'", 'true', "'", 'creativity', '.', 'While', 'some', 'critics', 'call', 'it', 'mere', 'imitation', ',', 'others', 'see', 'it', 'as', 'a', '$', '10', 'million', 'revolution', 'in', 'human', '–', 'AI', 'collaboration', '!']
+
+i    text          is_punct  like_num  is_currency  is_stop  whitespace_after
+---  ------------  --------  --------  -----------  -------  ----------------
+0    On            False     False     False        True     ' '             
+1    Jan.          False     False     False        False    ' '             
+2    15            False     True      False        False    ''              
+3    ,             True      False     False        False    ' '             
+4    2024          False     True      False        False    ''              
+5    ,             True      False     False        False    ' '             
+6    Dr.           False     False     False        False    ' '             
+7    Smith         False     False     False        False    ''              
+8    's            False     False     False        True     ' '             
+9    research      False     False     False        False    ' '             
+10   on            False     False     False        True     ' '             
+11   AI            False     False     False        False    ''              
+12   -             True      False     False        False    ''              
+13   generated     False     False     False        False    ' '             
+14   art           False     False     False        False    ' '             
+15   sparked       False     False     False        False    ' '             
+16   debates       False     False     False        False    ' '             
+17   on            False     False     False        True     ' '             
+18   '             True      False     False        False    ''              
+19   true          False     False     False        False    ''              
+20   '             True      False     False        False    ' '             
+21   creativity    False     False     False        False    ''              
+22   .             True      False     False        False    ' '             
+23   While         False     False     False        True     ' '             
+24   some          False     False     False        True     ' '             
+25   critics       False     False     False        False    ' '             
+26   call          False     False     False        True     ' '             
+27   it            False     False     False        True     ' '             
+28   mere          False     False     False        False    ' '             
+29   imitation     False     False     False        False    ''              
+30   ,             True      False     False        False    ' '             
+31   others        False     False     False        True     ' '             
+32   see           False     False     False        True     ' '             
+33   it            False     False     False        True     ' '             
+34   as            False     False     False        True     ' '             
+35   a             False     False     False        True     ' '             
+36   $             False     False     True         False    ''              
+37   10            False     True      False        False    ' '             
+38   million       False     True      False        False    ' '             
+39   revolution    False     False     False        False    ' '             
+40   in            False     False     False        True     ' '             
+41   human         False     False     False        False    ''              
+42   –             True      False     False        False    ''              
+43   AI            False     False     False        False    ' '             
+44   collaboration  False     False     False        False    ''              
+45   !             True      False     False        False    ''              
+
+==============================================================================
+TASK 2: Tokens that are not numbers, number words or stop words
+==============================================================================
+Kept (28 tokens):
+['Jan.', ',', ',', 'Dr.', 'Smith', 'research', 'AI', '-', 'generated', 'art', 'sparked', 'debates', "'", 'true', "'", 'creativity', '.', 'critics', 'mere', 'imitation', ',', '$', 'revolution', 'human', '–', 'AI', 'collaboration', '!']
+
+Removed (18 tokens):
+[('On', 'is_stop'), ('15', 'like_num'), ('2024', 'like_num'), ("'s", 'is_stop'), ('on', 'is_stop'), ('on', 'is_stop'), ('While', 'is_stop'), ('some', 'is_stop'), ('call', 'is_stop'), ('it', 'is_stop'), ('others', 'is_stop'), ('see', 'is_stop'), ('it', 'is_stop'), ('as', 'is_stop'), ('a', 'is_stop'), ('10', 'like_num'), ('million', 'like_num'), ('in', 'is_stop')]
+
+Variant that also removes punctuation/currency (18 tokens):
+['Jan.', 'Dr.', 'Smith', 'research', 'AI', 'generated', 'art', 'sparked', 'debates', 'true', 'creativity', 'critics', 'mere', 'imitation', 'revolution', 'human', 'AI', 'collaboration']
+
+like_num check on number words: [('one', True), ('two', True), ('first', True), ('third', True), ('ten', True), ('hundred', True), ('million', True), ('2024', True), ('15', True), ('3.5', True)]
+
+==============================================================================
+TASK 3: spaCy tokenizer vs. Python's split()
+==============================================================================
+Text: Hello, world! Isn't this state-of-the-art? I'm sure it is. Don't you think so, Dr. Brown? We'll see: prices rose 3.5% in the U.S.
+
+split() -> 23 tokens:
+['Hello,', 'world!', "Isn't", 'this', 'state-of-the-art?', "I'm", 'sure', 'it', 'is.', "Don't", 'you', 'think', 'so,', 'Dr.', 'Brown?', "We'll", 'see:', 'prices', 'rose', '3.5%', 'in', 'the', 'U.S.']
+
+spaCy   -> 41 tokens:
+['Hello', ',', 'world', '!', 'Is', "n't", 'this', 'state', '-', 'of', '-', 'the', '-', 'art', '?', 'I', "'m", 'sure', 'it', 'is', '.', 'Do', "n't", 'you', 'think', 'so', ',', 'Dr.', 'Brown', '?', 'We', "'ll", 'see', ':', 'prices', 'rose', '3.5', '%', 'in', 'the', 'U.S.']
+
+How each approach handles specific phenomena:
+  world!             split(): ['world!']             spaCy: ['world', '!']
+  so,                split(): ['so,']                spaCy: ['so', ',']
+  Isn't              split(): ["Isn't"]              spaCy: ['Is', "n't"]
+  I'm                split(): ["I'm"]                spaCy: ['I', "'m"]
+  don't              split(): ["don't"]              spaCy: ['do', "n't"]
+  state-of-the-art   split(): ['state-of-the-art']   spaCy: ['state', '-', 'of', '-', 'the', '-', 'art']
+  AI-generated       split(): ['AI-generated']       spaCy: ['AI', '-', 'generated']
+  Dr.                split(): ['Dr.']                spaCy: ['Dr.']
+  U.S.               split(): ['U.S.']               spaCy: ['U.S.']
+  3.5%               split(): ['3.5%']               spaCy: ['3.5', '%']
+  $10                split(): ['$10']                spaCy: ['$', '10']
+
+Tags with spaCy tokens:
+[('I', 'PRP'), ("'m", 'VBP'), ('sure', 'JJ'), ('it', 'PRP'), ('is', 'VBZ'), ('.', '.'), ('Do', 'VBP'), ("n't", 'RB'), ('you', 'PRP'), ('think', 'VB'), ('so', 'RB'), (',', ','), ('Dr.', 'NNP'), ('Brown', 'NNP'), ('?', '.')]
+Tags with split() tokens:
+[("I'm", 'PRP'), ('sure', 'JJ'), ('it', 'PRP'), ('is.', 'UH'), ("Don't", 'RB'), ('you', 'PRP'), ('think', 'VBP'), ('so,', 'NN'), ('Dr.', 'NNP'), ('Brown?', 'NN')]
+
+==============================================================================
+TASK 4: UPOS (token.pos_) vs. XPOS (token.tag_)
+==============================================================================
+
+Sentence 1: The quick brown fox jumps over the lazy dog, but why does it always pick on that poor dog?
+text         UPOS    XPOS   XPOS meaning                            dep        head      
+-----------  ------  -----  --------------------------------------  ---------  ----------
+The          DET     DT     determiner                              det        fox       
+quick        ADJ     JJ     adjective (English), other noun-modifi  amod       fox       
+brown        ADJ     JJ     adjective (English), other noun-modifi  amod       fox       
+fox          NOUN    NN     noun, singular or mass                  nsubj      jumps     
+jumps        VERB    VBZ    verb, 3rd person singular present       ROOT       jumps     
+over         ADP     IN     conjunction, subordinating or preposit  prep       jumps     
+the          DET     DT     determiner                              det        dog       
+lazy         ADJ     JJ     adjective (English), other noun-modifi  amod       dog       
+dog          NOUN    NN     noun, singular or mass                  pobj       over      
+,            PUNCT   ,      punctuation mark, comma                 punct      jumps     
+but          CCONJ   CC     conjunction, coordinating               cc         jumps     
+why          SCONJ   WRB    wh-adverb                               advmod     pick      
+does         AUX     VBZ    verb, 3rd person singular present       aux        pick      
+it           PRON    PRP    pronoun, personal                       nsubj      pick      
+always       ADV     RB     adverb                                  advmod     pick      
+pick         VERB    VB     verb, base form                         conj       jumps     
+on           ADP     IN     conjunction, subordinating or preposit  prep       pick      
+that         DET     DT     determiner                              det        dog       
+poor         ADJ     JJ     adjective (English), other noun-modifi  amod       dog       
+dog          NOUN    NN     noun, singular or mass                  pobj       on        
+?            PUNCT   .      punctuation mark, sentence closer       punct      pick      
+
+Sentence 2: She saw the man with binoculars.
+text         UPOS    XPOS   XPOS meaning                            dep        head      
+-----------  ------  -----  --------------------------------------  ---------  ----------
+She          PRON    PRP    pronoun, personal                       nsubj      saw       
+saw          VERB    VBD    verb, past tense                        ROOT       saw       
+the          DET     DT     determiner                              det        man       
+man          NOUN    NN     noun, singular or mass                  dobj       saw       
+with         ADP     IN     conjunction, subordinating or preposit  prep       man       
+binoculars   NOUN    NNS    noun, plural                            pobj       with      
+.            PUNCT   .      punctuation mark, sentence closer       punct      saw       
+
+Sentence 3: Time flies like an arrow; fruit flies like a banana.
+text         UPOS    XPOS   XPOS meaning                            dep        head      
+-----------  ------  -----  --------------------------------------  ---------  ----------
+Time         NOUN    NN     noun, singular or mass                  nsubj      flies     
+flies        VERB    VBZ    verb, 3rd person singular present       ROOT       flies     
+like         ADP     IN     conjunction, subordinating or preposit  prep       flies     
+an           DET     DT     determiner                              det        arrow     
+arrow        NOUN    NN     noun, singular or mass                  pobj       like      
+;            PUNCT   :      punctuation mark, colon or ellipsis     punct      flies     
+fruit        NOUN    NN     noun, singular or mass                  compound   flies     
+flies        NOUN    NNS    noun, plural                            conj       flies     
+like         ADP     IN     conjunction, subordinating or preposit  prep       flies     
+a            DET     DT     determiner                              det        banana    
+banana       NOUN    NN     noun, singular or mass                  pobj       like      
+.            PUNCT   .      punctuation mark, sentence closer       punct      flies     
+
+Same word form, different context:
+  flies  [('flies', 'VERB', 'VBZ', 'ROOT'), ('flies', 'NOUN', 'NNS', 'conj')]
+  like   [('like', 'ADP', 'IN', 'prep'), ('like', 'ADP', 'IN', 'prep')]
+  saw    [('saw', 'VERB', 'VBD', 'ROOT')]
+  that   [('that', 'DET', 'DT', 'det')]
+  dog    [('dog', 'NOUN', 'NN', 'pobj'), ('dog', 'NOUN', 'NN', 'pobj')]
+
+PP attachment: 'with' is attached to 'man' (dep=prep)
+
+Saved dependency visualisation to C:\Users\vavyl\Desktop\New folder (2)\output\task4_time_flies.svg
+
+Comparison en_core_web_sm vs. en_core_web_md on the ambiguous sentences:
+  sm: She/PRON/PRP->saw saw/VERB/VBD->saw the/DET/DT->man man/NOUN/NN->saw with/ADP/IN->man binoculars/NOUN/NNS->with
+  md: She/PRON/PRP->saw saw/VERB/VBD->saw the/DET/DT->man man/NOUN/NN->saw with/ADP/IN->saw binoculars/NOUN/NNS->with
+  sm: Time/NOUN/NN->flies flies/VERB/VBZ->flies like/ADP/IN->flies an/DET/DT->arrow arrow/NOUN/NN->like fruit/NOUN/NN->flies flies/NOUN/NNS->flies like/ADP/IN->flies a/DET/DT->banana banana/NOUN/NN->like
+  md: Time/NOUN/NN->flies flies/VERB/VBZ->flies like/ADP/IN->flies an/DET/DT->arrow arrow/NOUN/NN->like fruit/NOUN/NN->flies flies/VERB/VBZ->flies like/ADP/IN->flies a/DET/DT->banana banana/NOUN/NN->like
+
+==============================================================================
+TASK 5: Travel queries - which ones are about a planned future flight?
+==============================================================================
+
+Query 1: We flew to Rome 3 days ago. I still haven't received the bill, please send it ASAP.
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+We            PRON   PRP   nsubj     flew        Case=Nom|Number=Plur|Person=1|PronType=Prs
+flew          VERB   VBD   ROOT      flew        Tense=Past|VerbForm=Fin                 
+to            ADP    IN    prep      flew                                                
+Rome          PROPN  NNP   pobj      to          Number=Sing                             
+3             NUM    CD    nummod    days        NumType=Card                            
+days          NOUN   NNS   npadvmod  ago         Number=Plur                             
+ago           ADV    RB    advmod    flew                                                
+.             PUNCT  .     punct     flew        PunctType=Peri                          
+I             PRON   PRP   nsubj     received    Case=Nom|Number=Sing|Person=1|PronType=Prs
+still         ADV    RB    advmod    received                                            
+have          AUX    VBP   aux       received    Mood=Ind|Tense=Pres|VerbForm=Fin        
+n't           PART   RB    neg       received    Polarity=Neg                            
+received      VERB   VBN   ccomp     send        Aspect=Perf|Tense=Past|VerbForm=Part    
+the           DET    DT    det       bill        Definite=Def|PronType=Art               
+bill          NOUN   NN    dobj      received    Number=Sing                             
+,             PUNCT  ,     punct     send        PunctType=Comm                          
+please        INTJ   UH    intj      send                                                
+send          VERB   VB    ROOT      send        VerbForm=Inf                            
+it            PRON   PRP   dobj      send        Case=Acc|Gender=Neut|Number=Sing|Person=3|PronType=Prs
+ASAP          PROPN  NNP   advmod    send        Number=Sing                             
+.             PUNCT  .     punct     send        PunctType=Peri                          
+  -> 'flew': PAST  [simple past (VBD), Tense=Past]
+
+Query 2: I have flown to Rome this morning and forgot my laptop on the plane. Can you please connect me to lost and found?
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+I             PRON   PRP   nsubj     flown       Case=Nom|Number=Sing|Person=1|PronType=Prs
+have          AUX    VBP   aux       flown       Mood=Ind|Tense=Pres|VerbForm=Fin        
+flown         VERB   VBN   ROOT      flown       Aspect=Perf|Tense=Past|VerbForm=Part    
+to            ADP    IN    prep      flown                                               
+Rome          PROPN  NNP   pobj      to          Number=Sing                             
+this          DET    DT    det       morning     Number=Sing|PronType=Dem                
+morning       NOUN   NN    npadvmod  flown       Number=Sing                             
+and           CCONJ  CC    cc        flown       ConjType=Cmp                            
+forgot        VERB   VBD   conj      flown       Tense=Past|VerbForm=Fin                 
+my            PRON   PRP$  poss      laptop      Number=Sing|Person=1|Poss=Yes|PronType=Prs
+laptop        NOUN   NN    dobj      forgot      Number=Sing                             
+on            ADP    IN    prep      forgot                                              
+the           DET    DT    det       plane       Definite=Def|PronType=Art               
+plane         NOUN   NN    pobj      on          Number=Sing                             
+.             PUNCT  .     punct     flown       PunctType=Peri                          
+Can           AUX    MD    aux       connect     VerbForm=Fin                            
+you           PRON   PRP   nsubj     connect     Case=Nom|Person=2|PronType=Prs          
+please        INTJ   UH    intj      connect                                             
+connect       VERB   VB    ROOT      connect     VerbForm=Inf                            
+me            PRON   PRP   dobj      connect     Case=Acc|Number=Sing|Person=1|PronType=Prs
+to            PART   TO    aux       lost                                                
+lost          VERB   VB    xcomp     connect     VerbForm=Inf                            
+and           CCONJ  CC    cc        lost        ConjType=Cmp                            
+found         VERB   VBN   conj      lost        Aspect=Perf|Tense=Past|VerbForm=Part    
+?             PUNCT  .     punct     connect     PunctType=Peri                          
+  -> 'have flown': PAST (present perfect)  [aux 'have' + past participle (VBN), Tense=Past]
+
+Query 3: I'm flying to Rome next week. Can you check flight availability?
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+I             PRON   PRP   nsubj     flying      Case=Nom|Number=Sing|Person=1|PronType=Prs
+'m            AUX    VBP   aux       flying      Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin
+flying        VERB   VBG   ROOT      flying      Aspect=Prog|Tense=Pres|VerbForm=Part    
+to            ADP    IN    prep      flying                                              
+Rome          PROPN  NNP   pobj      to          Number=Sing                             
+next          ADJ    JJ    amod      week        Degree=Pos                              
+week          NOUN   NN    npadvmod  flying      Number=Sing                             
+.             PUNCT  .     punct     flying      PunctType=Peri                          
+Can           AUX    MD    aux       check       VerbForm=Fin                            
+you           PRON   PRP   nsubj     check       Case=Nom|Person=2|PronType=Prs          
+check         VERB   VB    ROOT      check       VerbForm=Inf                            
+flight        NOUN   NN    compound  availability  Number=Sing                             
+availability  NOUN   NN    dobj      check       Number=Sing                             
+?             PUNCT  .     punct     check       PunctType=Peri                          
+  -> ''m flying': FUTURE (planned)  [aux 'be' (VBP) + VBG, Aspect=Prog, with future time expression ('next ...')]
+
+Query 4: We need to fly to Rome. Can you check flights for next Tuesday?
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+We            PRON   PRP   nsubj     need        Case=Nom|Number=Plur|Person=1|PronType=Prs
+need          VERB   VBP   ROOT      need        Tense=Pres|VerbForm=Fin                 
+to            PART   TO    aux       fly                                                 
+fly           VERB   VB    xcomp     need        VerbForm=Inf                            
+to            ADP    IN    prep      fly                                                 
+Rome          PROPN  NNP   pobj      to          Number=Sing                             
+.             PUNCT  .     punct     need        PunctType=Peri                          
+Can           AUX    MD    aux       check       VerbForm=Fin                            
+you           PRON   PRP   nsubj     check       Case=Nom|Person=2|PronType=Prs          
+check         VERB   VB    ROOT      check       VerbForm=Inf                            
+flights       NOUN   NNS   dobj      check       Number=Plur                             
+for           ADP    IN    prep      flights                                             
+next          ADJ    JJ    amod      Tuesday     Degree=Pos                              
+Tuesday       PROPN  NNP   pobj      for         Number=Sing                             
+?             PUNCT  .     punct     check       PunctType=Peri                          
+  -> 'to fly': FUTURE (intent)  [xcomp of 'need' (VBP), 'to' (TO/aux) + base form (VB)]
+
+Query 5: I will fly to Rome next week. Can you check the flights?
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+I             PRON   PRP   nsubj     fly         Case=Nom|Number=Sing|Person=1|PronType=Prs
+will          AUX    MD    aux       fly         VerbForm=Fin                            
+fly           VERB   VB    ROOT      fly         VerbForm=Inf                            
+to            ADP    IN    prep      fly                                                 
+Rome          PROPN  NNP   pobj      to          Number=Sing                             
+next          ADJ    JJ    amod      week        Degree=Pos                              
+week          NOUN   NN    npadvmod  fly         Number=Sing                             
+.             PUNCT  .     punct     fly         PunctType=Peri                          
+Can           AUX    MD    aux       check       VerbForm=Fin                            
+you           PRON   PRP   nsubj     check       Case=Nom|Person=2|PronType=Prs          
+check         VERB   VB    ROOT      check       VerbForm=Inf                            
+the           DET    DT    det       flights     Definite=Def|PronType=Art               
+flights       NOUN   NNS   dobj      check       Number=Plur                             
+?             PUNCT  .     punct     check       PunctType=Peri                          
+  -> 'will fly': FUTURE  [modal aux 'will' (MD) + base form (VB)]
+
+Query 6: They will fly to Vienna next Monday. Can you check the flights?
+text          POS    TAG   dep       head        morph                                   
+------------  -----  ----  --------  ----------  ----------------------------------------
+They          PRON   PRP   nsubj     fly         Case=Nom|Number=Plur|Person=3|PronType=Prs
+will          AUX    MD    aux       fly         VerbForm=Fin                            
+fly           VERB   VB    ROOT      fly         VerbForm=Inf                            
+to            ADP    IN    prep      fly                                                 
+Vienna        PROPN  NNP   pobj      to          Number=Sing                             
+next          ADJ    JJ    amod      Monday      Degree=Pos                              
+Monday        PROPN  NNP   npadvmod  fly         Number=Sing                             
+.             PUNCT  .     punct     fly         PunctType=Peri                          
+Can           AUX    MD    aux       check       VerbForm=Fin                            
+you           PRON   PRP   nsubj     check       Case=Nom|Person=2|PronType=Prs          
+check         VERB   VB    ROOT      check       VerbForm=Inf                            
+the           DET    DT    det       flights     Definite=Def|PronType=Art               
+flights       NOUN   NNS   dobj      check       Number=Plur                             
+?             PUNCT  .     punct     check       PunctType=Peri                          
+  -> 'will fly': FUTURE  [modal aux 'will' (MD) + base form (VB)]
+
+Queries about a planned future flight (booking intent): [3, 4, 5, 6]
+
+==============================================================================
+TASK 6: Dependency tree
+==============================================================================
+i   text       POS    dep     explanation                 head       children                      
+--  ---------  -----  ------  --------------------------  ---------  ------------------------------
+0   Although   SCONJ  mark    marker                      was        []                            
+1   she        PRON   nsubj   nominal subject             was        []                            
+2   was        AUX    advcl   adverbial clause modifier   finished   ['Although', 'she', 'tired']  
+3   tired      ADJ    acomp   adjectival complement       was        []                            
+4   ,          PUNCT  punct   punctuation                 finished   []                            
+5   she        PRON   nsubj   nominal subject             finished   []                            
+6   finished   VERB   ROOT    root                        finished   ['was', ',', 'she', 'work', 'before', '.']
+7   her        PRON   poss    possession modifier         work       []                            
+8   work       NOUN   dobj    direct object               finished   ['her']                       
+9   before     ADP    prep    prepositional modifier      finished   ['midnight']                  
+10  midnight   NOUN   pobj    object of preposition       before     []                            
+11  .          PUNCT  punct   punctuation                 finished   []                            
+
+Main clause verb (ROOT): finished
+Subject of main clause:  ['she']
+Object of main clause:   ['her work']
+
+'Although': dep=mark (marker), head='was'
+'was': dep=advcl (adverbial clause modifier), head='finished'
+Subordinate clause: Although she was tired
+
+Tree (indented):
+finished [ROOT, VERB]
+    was [advcl, AUX]
+        Although [mark, SCONJ]
+        she [nsubj, PRON]
+        tired [acomp, ADJ]
+    , [punct, PUNCT]
+    she [nsubj, PRON]
+    work [dobj, NOUN]
+        her [poss, PRON]
+    before [prep, ADP]
+        midnight [pobj, NOUN]
+    . [punct, PUNCT]
+
+Saved dependency visualisation to C:\Users\vavyl\Desktop\New folder (2)\output\task6_dependency_tree.svg
+
+==============================================================================
+TASK 7: Passive voice
+==============================================================================
+
+John bought a ticket for the concert yesterday.
+  deps: [('John', 'nsubj', 'NNP'), ('bought', 'ROOT', 'VBD'), ('a', 'det', 'DT'), ('ticket', 'dobj', 'NN'), ('for', 'prep', 'IN'), ('the', 'det', 'DT'), ('concert', 'pobj', 'NN'), ('yesterday', 'npadvmod', 'NN')]
+  -> ACTIVE voice (no nsubjpass/auxpass)
+
+Alice helped her friend with the homework.
+  deps: [('Alice', 'nsubj', 'NNP'), ('helped', 'ROOT', 'VBD'), ('her', 'poss', 'PRP$'), ('friend', 'dobj', 'NN'), ('with', 'prep', 'IN'), ('the', 'det', 'DT'), ('homework', 'pobj', 'NN')]
+  -> ACTIVE voice (no nsubjpass/auxpass)
+
+The team completed the project on time.
+  deps: [('The', 'det', 'DT'), ('team', 'nsubj', 'NN'), ('completed', 'ROOT', 'VBD'), ('the', 'det', 'DT'), ('project', 'dobj', 'NN'), ('on', 'prep', 'IN'), ('time', 'pobj', 'NN')]
+  -> ACTIVE voice (no nsubjpass/auxpass)
+
+The problem was solved quickly by Mark.
+  deps: [('The', 'det', 'DT'), ('problem', 'nsubjpass', 'NN'), ('was', 'auxpass', 'VBD'), ('solved', 'ROOT', 'VBN'), ('quickly', 'advmod', 'RB'), ('by', 'agent', 'IN'), ('Mark', 'pobj', 'NNP')]
+  -> PASSIVE voice: auxpass='was' (VBD) + 'solved' (VBN)
+     patient (nsubjpass): The problem
+     agent   (agent->pobj): Mark
+     tense: past  (aux morph: Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin)
+
+A new product was launched by the company last week.
+  deps: [('A', 'det', 'DT'), ('new', 'amod', 'JJ'), ('product', 'nsubjpass', 'NN'), ('was', 'auxpass', 'VBD'), ('launched', 'ROOT', 'VBN'), ('by', 'agent', 'IN'), ('the', 'det', 'DT'), ('company', 'pobj', 'NN'), ('last', 'amod', 'JJ'), ('week', 'npadvmod', 'NN')]
+  -> PASSIVE voice: auxpass='was' (VBD) + 'launched' (VBN)
+     patient (nsubjpass): A new product
+     agent   (agent->pobj): the company
+     tense: past  (aux morph: Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin)
+
+Flowers were planted in the garden by Sarah.
+  deps: [('Flowers', 'nsubjpass', 'NNS'), ('were', 'auxpass', 'VBD'), ('planted', 'ROOT', 'VBN'), ('in', 'prep', 'IN'), ('the', 'det', 'DT'), ('garden', 'pobj', 'NN'), ('by', 'agent', 'IN'), ('Sarah', 'pobj', 'NNP')]
+  -> PASSIVE voice: auxpass='were' (VBD) + 'planted' (VBN)
+     patient (nsubjpass): Flowers
+     agent   (agent->pobj): Sarah
+     tense: past  (aux morph: Mood=Ind|Tense=Past|VerbForm=Fin)
+
+The decision was made yesterday.
+  deps: [('The', 'det', 'DT'), ('decision', 'nsubjpass', 'NN'), ('was', 'auxpass', 'VBD'), ('made', 'ROOT', 'VBN'), ('yesterday', 'npadvmod', 'NN')]
+  -> PASSIVE voice: auxpass='was' (VBD) + 'made' (VBN)
+     patient (nsubjpass): The decision
+     agent   (agent->pobj): (not expressed - implicit agent)
+     tense: past  (aux morph: Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin)
+
+==============================================================================
+TASK 8: Sentences where Alisa is the subject of flying from Rome
+==============================================================================
+
+1. Alisa flew from Rome to Vienna three days ago.
+  verb: flew (POS=VERB, TAG=VBD, morph=Tense=Past|VerbForm=Fin)
+  subjects: [('Alisa', 'nsubj', 'PROPN')]
+  from:     Rome
+  -> MATCH
+  'Alisa': POS=PROPN, TAG=NNP, dep=nsubj, head='flew'
+
+2. My parents have flown from Athens to Rome this morning to visit Alisa.
+  verb: have flown (POS=VERB, TAG=VBN, morph=Aspect=Perf|Tense=Past|VerbForm=Part)
+  subjects: [('parents', 'nsubj', 'NOUN')]
+  from:     Athens
+  -> no match
+  'Alisa': POS=PROPN, TAG=NNP, dep=dobj, head='visit'
+
+3. Alisa and Luk will fly from Rome to Paris next week for a conference.
+  verb: will fly (POS=VERB, TAG=VB, morph=VerbForm=Inf)
+  subjects: [('Alisa', 'nsubj', 'PROPN'), ('Luk', 'conj', 'PROPN')]
+  from:     Rome
+  -> MATCH
+  'Alisa': POS=PROPN, TAG=NNP, dep=nsubj, head='fly'
+
+4. They are flying from New York to Rome tomorrow.
+  verb: are flying (POS=VERB, TAG=VBG, morph=Aspect=Prog|Tense=Pres|VerbForm=Part)
+  subjects: [('They', 'nsubj', 'PRON')]
+  from:     New York
+  -> no match
+
+5. John had flown from Rome to London before Alisa received the urgent call.
+  verb: had flown (POS=VERB, TAG=VBN, morph=Aspect=Perf|Tense=Past|VerbForm=Part)
+  subjects: [('John', 'nsubj', 'PROPN')]
+  from:     Rome
+  -> no match
+  'Alisa': POS=PROPN, TAG=NNP, dep=nsubj, head='received'
+
+Matching sentences: [1, 3]
+
+==============================================================================
+TASK 9: Multilingual NLP - Swedish (sv_core_news_sm)
+==============================================================================
+Text: Umeå universitet grundades 1965 och är i dag ett av Sveriges största lärosäten. Många studenter flyttar till Umeå för att studera språkteknologi, trots att vintrarna är långa och kalla.
+
+1) Tokens:
+['Umeå', 'universitet', 'grundades', '1965', 'och', 'är', 'i', 'dag', 'ett', 'av', 'Sveriges', 'största', 'lärosäten', '.', 'Många', 'studenter', 'flyttar', 'till', 'Umeå', 'för', 'att', 'studera', 'språkteknologi', ',', 'trots', 'att', 'vintrarna', 'är', 'långa', 'och', 'kalla', '.']
+
+2) POS tagging and 3) dependency parsing:
+text           lemma         UPOS    XPOS (SUC)              dep          head          morph                                        
+-------------  ------------  ------  ----------------------  -----------  ------------  ---------------------------------------------
+Umeå           umeå          PROPN   PM|GEN                  nmod:poss    universitet   Case=Gen                                     
+universitet    universitet   NOUN    NN|NEU|SIN|IND|NOM      nsubj:pass   grundades     Case=Nom|Definite=Ind|Gender=Neut|Number=Sing
+grundades      grundades     VERB    VB|PRT|SFO              ROOT         grundades     Mood=Ind|Tense=Past|VerbForm=Fin|Voice=Pass  
+1965           1965          NUM     RG|NOM                  nummod       grundades     Case=Nom|NumType=Card                        
+och            och           CCONJ   KN                      cc           ett                                                        
+är             vara          AUX     VB|PRS|AKT              cop          ett           Mood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act   
+i              i             ADP     PP                      advmod       ett                                                        
+dag            dag           NOUN    NN|UTR|SIN|IND|NOM      fixed        i             Case=Nom|Definite=Ind|Gender=Com|Number=Sing 
+ett            en            DET     DT|NEU|SIN|IND          conj         grundades     Definite=Ind|Gender=Neut|Number=Sing|PronType=Art
+av             av            ADP     PP                      case         lärosäten                                                  
+Sveriges       Sverige       PROPN   PM|GEN                  nmod:poss    lärosäten     Case=Gen                                     
+största        stor          ADJ     JJ|SUV|UTR/NEU|SIN/PLU|DEF|NOM  amod         lärosäten     Case=Nom|Definite=Def|Degree=Sup             
+lärosäten      lärosät       NOUN    NN|UTR|SIN|DEF|NOM      nmod         ett           Case=Nom|Definite=Def|Gender=Com|Number=Sing 
+.              .             PUNCT   MAD                     punct        grundades                                                  
+Många          många         ADJ     JJ|POS|UTR/NEU|PLU|IND/DEF|NOM  amod         studenter     Case=Nom|Degree=Pos|Number=Plur              
+studenter      student       NOUN    NN|UTR|PLU|IND|NOM      nsubj        flyttar       Case=Nom|Definite=Ind|Gender=Com|Number=Plur 
+flyttar        flytta        VERB    VB|PRS|AKT              ROOT         flyttar       Mood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act   
+till           till          ADP     PP                      case         Umeå                                                       
+Umeå           Umeå          PROPN   PM|NOM                  obl          flyttar       Case=Nom                                     
+för            för           ADP     PP                      mark         studera                                                    
+att            att           PART    IE                      mark         studera                                                    
+studera        studera       VERB    VB|INF|AKT              advcl        flyttar       VerbForm=Inf|Voice=Act                       
+språkteknologi  språkteknologi  NOUN    NN|UTR|SIN|IND|NOM      obj          studera       Case=Nom|Definite=Ind|Gender=Com|Number=Sing 
+,              ,             PUNCT   MID                     punct        flyttar                                                    
+trots          trots         ADP     PP                      mark         långa                                                      
+att            att           SCONJ   SN                      fixed        trots                                                      
+vintrarna      vintrarna     NOUN    NN|UTR|PLU|DEF|NOM      nsubj        långa         Case=Nom|Definite=Def|Gender=Com|Number=Plur 
+är             vara          AUX     VB|PRS|AKT              cop          långa         Mood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act   
+långa          lång          ADJ     JJ|POS|UTR/NEU|PLU|IND/DEF|NOM  advcl        flyttar       Case=Nom|Degree=Pos|Number=Plur              
+och            och           CCONJ   KN                      cc           kalla                                                      
+kalla          kalla         VERB    VB|INF|AKT              conj         långa         VerbForm=Inf|Voice=Act                       
+.              .             PUNCT   MAD                     punct        flyttar                                                    
+
+Sentence 1: ROOT='grundades' (VERB), subject=['universitet']
+
+Sentence 2: ROOT='flyttar' (VERB), subject=['studenter']
+
+Named entities: [('Umeå universitet', 'ORG'), ('Sveriges', 'LOC'), ('Umeå', 'LOC')]
+
+Saved dependency visualisation to C:\Users\vavyl\Desktop\New folder (2)\output\task9_swedish_sentence1.svg
+
+Saved dependency visualisation to C:\Users\vavyl\Desktop\New folder (2)\output\task9_swedish_sentence2.svg

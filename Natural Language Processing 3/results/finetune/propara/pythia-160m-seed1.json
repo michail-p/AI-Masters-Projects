@@ -1,0 +1,48 @@
+{
+ "model": "pythia-160m",
+ "seed": 1,
+ "best_epoch": 5,
+ "history": [
+  {
+   "epoch": 1,
+   "change_f1": 0.332914607010687,
+   "location_acc": 0.44435215946843853,
+   "score": 0.38863338323956276
+  },
+  {
+   "epoch": 2,
+   "change_f1": 0.5678047043054502,
+   "location_acc": 0.6038205980066446,
+   "score": 0.5858126511560473
+  },
+  {
+   "epoch": 3,
+   "change_f1": 0.6563539310288602,
+   "location_acc": 0.5722591362126246,
+   "score": 0.6143065336207424
+  },
+  {
+   "epoch": 4,
+   "change_f1": 0.6207566348432993,
+   "location_acc": 0.6046511627906976,
+   "score": 0.6127038988169985
+  },
+  {
+   "epoch": 5,
+   "change_f1": 0.6486431195214972,
+   "location_acc": 0.5930232558139535,
+   "score": 0.6208331876677253
+  }
+ ],
+ "args": {
+  "model": "pythia-160m",
+  "dataset": "propara",
+  "seed": 1,
+  "epochs": 5,
+  "lr": 2e-05,
+  "head_lr": 0.001,
+  "accumulate": 8,
+  "train_groups": null
+ },
+ "seconds": 8941
+}

@@ -1,0 +1,48 @@
+{
+ "model": "pythia-410m",
+ "seed": 0,
+ "best_epoch": 5,
+ "history": [
+  {
+   "epoch": 1,
+   "change_f1": 0.6596598112549429,
+   "location_acc": 0.5647840531561462,
+   "score": 0.6122219322055446
+  },
+  {
+   "epoch": 2,
+   "change_f1": 0.6411694451945582,
+   "location_acc": 0.5880398671096345,
+   "score": 0.6146046561520964
+  },
+  {
+   "epoch": 3,
+   "change_f1": 0.6618027847506214,
+   "location_acc": 0.6129568106312292,
+   "score": 0.6373797976909252
+  },
+  {
+   "epoch": 4,
+   "change_f1": 0.6617919546582118,
+   "location_acc": 0.622093023255814,
+   "score": 0.6419424889570129
+  },
+  {
+   "epoch": 5,
+   "change_f1": 0.6770278452789446,
+   "location_acc": 0.6411960132890365,
+   "score": 0.6591119292839905
+  }
+ ],
+ "args": {
+  "model": "pythia-410m",
+  "dataset": "propara",
+  "seed": 0,
+  "epochs": 5,
+  "lr": 2e-05,
+  "head_lr": 0.001,
+  "accumulate": 8,
+  "train_groups": null
+ },
+ "seconds": 9715
+}

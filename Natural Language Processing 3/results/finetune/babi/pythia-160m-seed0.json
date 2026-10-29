@@ -1,0 +1,36 @@
+{
+ "model": "pythia-160m",
+ "seed": 0,
+ "best_epoch": 3,
+ "history": [
+  {
+   "epoch": 1,
+   "change_f1": 0.6954972031740723,
+   "location_acc": 0.5695488721804511,
+   "score": 0.6325230376772617
+  },
+  {
+   "epoch": 2,
+   "change_f1": 0.5719140066409754,
+   "location_acc": 0.47274436090225563,
+   "score": 0.5223291837716155
+  },
+  {
+   "epoch": 3,
+   "change_f1": 0.7318548387096775,
+   "location_acc": 0.556390977443609,
+   "score": 0.6441229080766433
+  }
+ ],
+ "args": {
+  "model": "pythia-160m",
+  "dataset": "babi",
+  "seed": 0,
+  "epochs": 3,
+  "lr": 2e-05,
+  "head_lr": 0.001,
+  "accumulate": 8,
+  "train_groups": null
+ },
+ "seconds": 9436
+}

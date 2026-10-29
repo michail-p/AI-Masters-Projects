@@ -1,0 +1,864 @@
+propara-37,2,0  entity='plant; animal'  MOVE: watery environment -> mud and silt
+      1. A plant of animal dies in a watery environment.
+   >> 2. Is buried in mud and silt.
+      3. Soft tissues quickly decompose leaving behind hard bones or shells.
+      4. Over time sediment builds over the top and hardens into rock.
+      5. As the bone decays mineral seeps in replacing it.
+      6. Fossils are formed.
+
+propara-37,4,0  entity='plant; animal'  MOVE: mud and silt -> rock
+      1. A plant of animal dies in a watery environment.
+      2. Is buried in mud and silt.
+      3. Soft tissues quickly decompose leaving behind hard bones or shells.
+   >> 4. Over time sediment builds over the top and hardens into rock.
+      5. As the bone decays mineral seeps in replacing it.
+      6. Fossils are formed.
+
+propara-37,4,2  entity='bones'  MOVE: ? -> rock
+      1. A plant of animal dies in a watery environment.
+      2. Is buried in mud and silt.
+      3. Soft tissues quickly decompose leaving behind hard bones or shells.
+   >> 4. Over time sediment builds over the top and hardens into rock.
+      5. As the bone decays mineral seeps in replacing it.
+      6. Fossils are formed.
+
+propara-38,2,0  entity='animal; body'  MOVE: ? -> sandy or wet place
+      1. The animal dies and the body falls down.
+   >> 2. It is not eaten by anything.
+      3. The body falls in a sandy or wet place.
+      4. The soil forms around the body.
+      5. Time passes on and the rock forms.
+      6. Millions years later the fossil forms.
+      7. A person now finds the fossil.
+
+propara-38,5,1  entity='soil'  DESTROY: around the body -> -
+      1. The animal dies and the body falls down.
+      2. It is not eaten by anything.
+      3. The body falls in a sandy or wet place.
+      4. The soil forms around the body.
+   >> 5. Time passes on and the rock forms.
+      6. Millions years later the fossil forms.
+      7. A person now finds the fossil.
+
+propara-38,6,0  entity='animal; body'  DESTROY: sandy or wet place -> -
+      1. The animal dies and the body falls down.
+      2. It is not eaten by anything.
+      3. The body falls in a sandy or wet place.
+      4. The soil forms around the body.
+      5. Time passes on and the rock forms.
+   >> 6. Millions years later the fossil forms.
+      7. A person now finds the fossil.
+
+propara-68,1,1  entity='plant and tree remains'  CREATE: - -> ?
+   >> 1. 300 millions years ago plants and trees died.
+      2. The plant and tree remains sank to the bottom of steamy, swampy areas.
+      3. Layer upon layer of remains accumulated.
+      4. Eventually forming a soggy, dense material called peat.
+      5. The peat was buried over millions of years by sand, clay, and other mineral material.
+      6. Pressure caused by the wait of the materials squeezed water from the peat.
+      7. With the heat caused by increased burial peat slowly became coal.
+
+propara-68,4,1  entity='plant and tree remains'  MOVE: steamy , swampy area -> swampy area
+      1. 300 millions years ago plants and trees died.
+      2. The plant and tree remains sank to the bottom of steamy, swampy areas.
+      3. Layer upon layer of remains accumulated.
+   >> 4. Eventually forming a soggy, dense material called peat.
+      5. The peat was buried over millions of years by sand, clay, and other mineral material.
+      6. Pressure caused by the wait of the materials squeezed water from the peat.
+      7. With the heat caused by increased burial peat slowly became coal.
+
+propara-68,4,3  entity='water'  MOVE: steamy , swampy area -> peat
+      1. 300 millions years ago plants and trees died.
+      2. The plant and tree remains sank to the bottom of steamy, swampy areas.
+      3. Layer upon layer of remains accumulated.
+   >> 4. Eventually forming a soggy, dense material called peat.
+      5. The peat was buried over millions of years by sand, clay, and other mineral material.
+      6. Pressure caused by the wait of the materials squeezed water from the peat.
+      7. With the heat caused by increased burial peat slowly became coal.
+
+propara-68,5,1  entity='plant and tree remains'  MOVE: swampy area -> sand , clay , and other mineral material
+      1. 300 millions years ago plants and trees died.
+      2. The plant and tree remains sank to the bottom of steamy, swampy areas.
+      3. Layer upon layer of remains accumulated.
+      4. Eventually forming a soggy, dense material called peat.
+   >> 5. The peat was buried over millions of years by sand, clay, and other mineral material.
+      6. Pressure caused by the wait of the materials squeezed water from the peat.
+      7. With the heat caused by increased burial peat slowly became coal.
+
+propara-68,6,1  entity='plant and tree remains'  MOVE: sand , clay , and other mineral material -> swampy area
+      1. 300 millions years ago plants and trees died.
+      2. The plant and tree remains sank to the bottom of steamy, swampy areas.
+      3. Layer upon layer of remains accumulated.
+      4. Eventually forming a soggy, dense material called peat.
+      5. The peat was buried over millions of years by sand, clay, and other mineral material.
+   >> 6. Pressure caused by the wait of the materials squeezed water from the peat.
+      7. With the heat caused by increased burial peat slowly became coal.
+
+propara-69,3,6  entity='water'  MOVE: bottom of swamp -> peat
+      1. Plants and trees die.
+      2. Dead plants and trees pile up at the bottom of swamps.
+   >> 3. Dead plants and trees form layers called peat.
+      4. Sand and clay cover the peat.
+      5. The sand and clay form sedimentary rocks.
+      6. Pressure caused by sedimentary rocks squeezes water out of the peat.
+      7. Heat changes the material into coal.
+
+propara-69,7,1  entity='peat'  DESTROY: bottom of swamp -> -
+      1. Plants and trees die.
+      2. Dead plants and trees pile up at the bottom of swamps.
+      3. Dead plants and trees form layers called peat.
+      4. Sand and clay cover the peat.
+      5. The sand and clay form sedimentary rocks.
+      6. Pressure caused by sedimentary rocks squeezes water out of the peat.
+   >> 7. Heat changes the material into coal.
+
+propara-70,1,1  entity='water'  MOVE: ? -> rain
+   >> 1. There is a lot of rain.
+      2. Water levels of a river or lake get higher.
+      3. Water builds up on the ground.
+      4. Water covers streets.
+      5. Water goes into houses.
+      6. The rain or other source of water stops.
+      7. Water flows into streams.
+      8. The rest of the water evaporates.
+
+propara-249,5,1  entity='oxygen'  DESTROY: rock -> -
+      1. Chemical reactions break down the bonds holding the rocks together.
+      2. The rocks fall apart.
+      3. They form smaller and smaller pieces.
+      4. Oxidation takes place when oxygen combines with other elements in rocks.
+   >> 5. They form new types of rocks.
+      6. The new substance is softer.
+      7. Carbonation takes place when carbon dioxide reactions with certain types of rocks.
+      8. A solution is formed that can easily be carried away by water.
+
+propara-249,8,2  entity='new types of rocks; new substance; certain types of rocks'  MOVE: ? -> water
+      1. Chemical reactions break down the bonds holding the rocks together.
+      2. The rocks fall apart.
+      3. They form smaller and smaller pieces.
+      4. Oxidation takes place when oxygen combines with other elements in rocks.
+      5. They form new types of rocks.
+      6. The new substance is softer.
+      7. Carbonation takes place when carbon dioxide reactions with certain types of rocks.
+   >> 8. A solution is formed that can easily be carried away by water.
+
+propara-401,2,0  entity='sunlight'  CREATE: - -> solar panel
+      1. Solar panels are made up of two types of silicon.
+   >> 2. Sun shines on solar panels.
+      3. Sunlight goes into the top half of the solar panel.
+      4. Sunlight travels into the bottom half of the solar panel.
+      5. The "jump" between the two halves can be used to make direct current.
+      6. A solar "inverter" changes the direct current to alternating current.
+      7. Alternating current can be used to power things in your house.
+
+propara-401,5,0  entity='sunlight'  DESTROY: bottom half of the solar panel -> -
+      1. Solar panels are made up of two types of silicon.
+      2. Sun shines on solar panels.
+      3. Sunlight goes into the top half of the solar panel.
+      4. Sunlight travels into the bottom half of the solar panel.
+   >> 5. The "jump" between the two halves can be used to make direct current.
+      6. A solar "inverter" changes the direct current to alternating current.
+      7. Alternating current can be used to power things in your house.
+
+propara-411,6,0  entity='electrochemical signals'  MOVE: retina -> cerebral cortex
+      1. Visual perception begins as soon as the eye focuses light onto the retina, where it is absorbed by a layer of photoreceptor cells.
+      2. These cells convert light into electrochemical signals, and are divided into two types, rods.
+      3. Cones.
+      4. Signals from the photoreceptor cells pass through a network of interneurons in the second layer of the retina to ganglion cells in the third layer.
+      5. The neurons in these two retinal layers exhibit complex receptive fields that enable them to detect contrast changes within an image; these changes might indicate edges or shadows.
+   >> 6. The optic nerve primarily routes information via the thalamus to the cerebral cortex.
+      7. Information concerning moving targets and information governing scanning of the eyes travels to a second site in the brainstem, a nucleus called the superior colliculus.
+      8. Most projections from the retina travel via the optic nerve to a part of the thalamus called the lateral geniculate nucleus (LGN), deep in the center of the brain.
+
+propara-411,7,0  entity='electrochemical signals'  MOVE: cerebral cortex -> superior colliculus
+      1. Visual perception begins as soon as the eye focuses light onto the retina, where it is absorbed by a layer of photoreceptor cells.
+      2. These cells convert light into electrochemical signals, and are divided into two types, rods.
+      3. Cones.
+      4. Signals from the photoreceptor cells pass through a network of interneurons in the second layer of the retina to ganglion cells in the third layer.
+      5. The neurons in these two retinal layers exhibit complex receptive fields that enable them to detect contrast changes within an image; these changes might indicate edges or shadows.
+      6. The optic nerve primarily routes information via the thalamus to the cerebral cortex.
+   >> 7. Information concerning moving targets and information governing scanning of the eyes travels to a second site in the brainstem, a nucleus called the superior colliculus.
+      8. Most projections from the retina travel via the optic nerve to a part of the thalamus called the lateral geniculate nucleus (LGN), deep in the center of the brain.
+
+propara-411,8,0  entity='electrochemical signals'  MOVE: superior colliculus -> brain
+      1. Visual perception begins as soon as the eye focuses light onto the retina, where it is absorbed by a layer of photoreceptor cells.
+      2. These cells convert light into electrochemical signals, and are divided into two types, rods.
+      3. Cones.
+      4. Signals from the photoreceptor cells pass through a network of interneurons in the second layer of the retina to ganglion cells in the third layer.
+      5. The neurons in these two retinal layers exhibit complex receptive fields that enable them to detect contrast changes within an image; these changes might indicate edges or shadows.
+      6. The optic nerve primarily routes information via the thalamus to the cerebral cortex.
+      7. Information concerning moving targets and information governing scanning of the eyes travels to a second site in the brainstem, a nucleus called the superior colliculus.
+   >> 8. Most projections from the retina travel via the optic nerve to a part of the thalamus called the lateral geniculate nucleus (LGN), deep in the center of the brain.
+
+propara-429,5,1  entity='fixed nitrogen; usable nitrogen'  MOVE: plant -> animal
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+   >> 5. Animals eat the plants.
+      6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+      9. Different bacteria turn nitrogen back into a gas-based form.
+      10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-429,6,1  entity='fixed nitrogen; usable nitrogen'  MOVE: animal -> waste
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+      5. Animals eat the plants.
+   >> 6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+      9. Different bacteria turn nitrogen back into a gas-based form.
+      10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-429,6,2  entity='plants'  MOVE: animal -> ?
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+      5. Animals eat the plants.
+   >> 6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+      9. Different bacteria turn nitrogen back into a gas-based form.
+      10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-429,9,2  entity='plants'  DESTROY: ? -> -
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+      5. Animals eat the plants.
+      6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+   >> 9. Different bacteria turn nitrogen back into a gas-based form.
+      10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-429,9,3  entity='waste'  DESTROY: ? -> -
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+      5. Animals eat the plants.
+      6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+   >> 9. Different bacteria turn nitrogen back into a gas-based form.
+      10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-429,10,4  entity='gas-based form'  MOVE: soil -> atmosphere
+      1. Nitrogen exists naturally in the atmosphere.
+      2. Bacteria in soil "fix" the nitrogen.
+      3. Nitrogen is now usable by living things.
+      4. Plants absorb this usable nitrogen through their roots.
+      5. Animals eat the plants.
+      6. Animals make waste.
+      7. Uneaten plants die.
+      8. Nitrogen re-enters the soil.
+      9. Different bacteria turn nitrogen back into a gas-based form.
+   >> 10. Gas-based nitrogen re-enters the atmosphere.
+
+propara-460,3,1  entity='carbon'  MOVE: live thing -> underground
+      1. Living things have carbon in them.
+      2. Living things die.
+   >> 3. The remains of living things eventually become buried underground.
+      4. More physical pressure is put on the remains of living things as they become further underground.
+      5. This carbon-based mixture stays underground for a long time.
+      6. Humans discover this carbon-based mixture.
+      7. This carbon-based mixture is brought up to the earth's surface.
+      8. The recently discovered fossil fuel is burned.
+      9. Burning releases the energy that has been stored in the fossil fuel.
+      10. The energy can be used to generate power.
+
+propara-460,4,1  entity='carbon'  DESTROY: underground -> -
+      1. Living things have carbon in them.
+      2. Living things die.
+      3. The remains of living things eventually become buried underground.
+   >> 4. More physical pressure is put on the remains of living things as they become further underground.
+      5. This carbon-based mixture stays underground for a long time.
+      6. Humans discover this carbon-based mixture.
+      7. This carbon-based mixture is brought up to the earth's surface.
+      8. The recently discovered fossil fuel is burned.
+      9. Burning releases the energy that has been stored in the fossil fuel.
+      10. The energy can be used to generate power.
+
+propara-460,4,2  entity='carbon-based mixture'  CREATE: - -> underground
+      1. Living things have carbon in them.
+      2. Living things die.
+      3. The remains of living things eventually become buried underground.
+   >> 4. More physical pressure is put on the remains of living things as they become further underground.
+      5. This carbon-based mixture stays underground for a long time.
+      6. Humans discover this carbon-based mixture.
+      7. This carbon-based mixture is brought up to the earth's surface.
+      8. The recently discovered fossil fuel is burned.
+      9. Burning releases the energy that has been stored in the fossil fuel.
+      10. The energy can be used to generate power.
+
+propara-460,7,3  entity='fossil fuel'  CREATE: - -> surface
+      1. Living things have carbon in them.
+      2. Living things die.
+      3. The remains of living things eventually become buried underground.
+      4. More physical pressure is put on the remains of living things as they become further underground.
+      5. This carbon-based mixture stays underground for a long time.
+      6. Humans discover this carbon-based mixture.
+   >> 7. This carbon-based mixture is brought up to the earth's surface.
+      8. The recently discovered fossil fuel is burned.
+      9. Burning releases the energy that has been stored in the fossil fuel.
+      10. The energy can be used to generate power.
+
+propara-460,7,4  entity='energy'  CREATE: - -> fossil fuel
+      1. Living things have carbon in them.
+      2. Living things die.
+      3. The remains of living things eventually become buried underground.
+      4. More physical pressure is put on the remains of living things as they become further underground.
+      5. This carbon-based mixture stays underground for a long time.
+      6. Humans discover this carbon-based mixture.
+   >> 7. This carbon-based mixture is brought up to the earth's surface.
+      8. The recently discovered fossil fuel is burned.
+      9. Burning releases the energy that has been stored in the fossil fuel.
+      10. The energy can be used to generate power.
+
+propara-463,3,1  entity='ice particle'  CREATE: - -> surface
+      1. Updrafts in a thunderstorm carry raindrops upwards.
+      2. The raindrops condense onto dust or other small parti.
+   >> 3. The supercooled water molecules condense onto the condensation nucleus and freeze.
+      4. The tiny ice particle keeps moving up and down, gathering more ice on the surface.
+      5. Eventually the hailstone falls to earth either because it's too heavy to remain aloft or because a drowndraft pushes it down.
+
+propara-463,4,2  entity='hailstone'  CREATE: - -> aloft
+      1. Updrafts in a thunderstorm carry raindrops upwards.
+      2. The raindrops condense onto dust or other small parti.
+      3. The supercooled water molecules condense onto the condensation nucleus and freeze.
+   >> 4. The tiny ice particle keeps moving up and down, gathering more ice on the surface.
+      5. Eventually the hailstone falls to earth either because it's too heavy to remain aloft or because a drowndraft pushes it down.
+
+propara-465,2,1  entity='hail'  CREATE: - -> wind
+      1. Water gets caught in winds that are moving upward.
+   >> 2. The water freezes.
+      3. The water starts to fall.
+      4. The winds are strong enough from keeping it from falling back to earth.
+      5. This pattern of rising and falling continues.
+      6. The hail becomes too large to be pushed up by the wind.
+      7. The hail finally falls to the ground.
+
+propara-502,1,4  entity='piston motion'  CREATE: - -> ?
+   >> 1. Energy is created by burning either diesel or petrol in a combustion chamber.
+      2. The energy is transferred from the pistons moving up and down at high speeds.
+      3. This piston motion is converted to a rotary motion through the crankshaft and axle.
+      4. The axle turns the wheels.
+      5. The car moves forward.
+
+propara-502,2,4  entity='piston motion'  MOVE: ? -> piston
+      1. Energy is created by burning either diesel or petrol in a combustion chamber.
+   >> 2. The energy is transferred from the pistons moving up and down at high speeds.
+      3. This piston motion is converted to a rotary motion through the crankshaft and axle.
+      4. The axle turns the wheels.
+      5. The car moves forward.
+
+propara-502,3,2  entity='energy'  MOVE: piston motion -> rotary motion
+      1. Energy is created by burning either diesel or petrol in a combustion chamber.
+      2. The energy is transferred from the pistons moving up and down at high speeds.
+   >> 3. This piston motion is converted to a rotary motion through the crankshaft and axle.
+      4. The axle turns the wheels.
+      5. The car moves forward.
+
+propara-503,5,3  entity='spark'  MOVE: car -> ?
+      1. A car is filled with gasoline (gas).
+      2. Someone turns the car on with a key.
+      3. The car's battery produces a spark (electricity).
+      4. The spark ignites the gas.
+   >> 5. The burning gas expands when it encounters air.
+      6. The expanding air and gas pushes a piston out.
+      7. The motion of several pistons move the crankshaft.
+      8. Different parts of the car cause the motion in the crankshaft to cause the wheels to move.
+      9. The wheels and the car's body can move.
+
+propara-533,2,0  entity='seed'  DESTROY: soil -> -
+      1. A seed comes from an adult tree.
+   >> 2. It sprouts from the soil.
+      3. It grows into a small seedling, a tree's infancy.
+      4. It grows bigger and becomes a sapling, a juvenile tree.
+      5. It reaches maturity, this make take many years depending on the type of tree.
+      6. The tree will begin to age and decline.
+      7. Eventually rot and decay after it dies.
+
+propara-533,3,1  entity='sprouts'  DESTROY: soil -> -
+      1. A seed comes from an adult tree.
+      2. It sprouts from the soil.
+   >> 3. It grows into a small seedling, a tree's infancy.
+      4. It grows bigger and becomes a sapling, a juvenile tree.
+      5. It reaches maturity, this make take many years depending on the type of tree.
+      6. The tree will begin to age and decline.
+      7. Eventually rot and decay after it dies.
+
+propara-533,4,2  entity='seedling'  DESTROY: soil -> -
+      1. A seed comes from an adult tree.
+      2. It sprouts from the soil.
+      3. It grows into a small seedling, a tree's infancy.
+   >> 4. It grows bigger and becomes a sapling, a juvenile tree.
+      5. It reaches maturity, this make take many years depending on the type of tree.
+      6. The tree will begin to age and decline.
+      7. Eventually rot and decay after it dies.
+
+propara-533,5,3  entity='sapling'  DESTROY: soil -> -
+      1. A seed comes from an adult tree.
+      2. It sprouts from the soil.
+      3. It grows into a small seedling, a tree's infancy.
+      4. It grows bigger and becomes a sapling, a juvenile tree.
+   >> 5. It reaches maturity, this make take many years depending on the type of tree.
+      6. The tree will begin to age and decline.
+      7. Eventually rot and decay after it dies.
+
+propara-533,7,4  entity='tree'  DESTROY: soil -> -
+      1. A seed comes from an adult tree.
+      2. It sprouts from the soil.
+      3. It grows into a small seedling, a tree's infancy.
+      4. It grows bigger and becomes a sapling, a juvenile tree.
+      5. It reaches maturity, this make take many years depending on the type of tree.
+      6. The tree will begin to age and decline.
+   >> 7. Eventually rot and decay after it dies.
+
+propara-534,7,1  entity='small tree; tree'  DESTROY: ? -> -
+      1. A seed is planted.
+      2. The seed becomes a small tree.
+      3. The small tree becomes larger and grows.
+      4. Some trees bear fruit.
+      5. Flowers.
+      6. After awhile the tree will stop growing.
+   >> 7. Eventually die.
+
+propara-582,8,4  entity='updraft'  MOVE: ? -> tornado
+      1. Warm, moist air moves from south to north.
+      2. Cool, dry air moves from north to south.
+      3. The air masses meet.
+      4. The conditions that form are not stable because the air masses are so different.
+      5. Winds are directed in a certain way because of how the masses interact.
+      6. An updraft results.
+      7. Winds start to form circular patterns in the updraft.
+   >> 8. A tornado can result.
+
+propara-582,8,5  entity='circular patterns'  MOVE: updraft -> ?
+      1. Warm, moist air moves from south to north.
+      2. Cool, dry air moves from north to south.
+      3. The air masses meet.
+      4. The conditions that form are not stable because the air masses are so different.
+      5. Winds are directed in a certain way because of how the masses interact.
+      6. An updraft results.
+      7. Winds start to form circular patterns in the updraft.
+   >> 8. A tornado can result.
+
+propara-583,2,0  entity='warm, humd low-presure air'  MOVE: ? -> air
+      1. Warm, humid low-pressure air rises.
+   >> 2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+      6. Drops to the ground.
+
+propara-583,4,1  entity='updraft'  MOVE: ? -> air
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+   >> 4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+      6. Drops to the ground.
+
+propara-583,6,0  entity='warm, humd low-presure air'  MOVE: air -> ground
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+   >> 6. Drops to the ground.
+
+propara-583,6,1  entity='updraft'  MOVE: air -> ground
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+   >> 6. Drops to the ground.
+
+propara-583,6,2  entity='dry, cold high-pressure air'  MOVE: air -> ground
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+   >> 6. Drops to the ground.
+
+propara-583,6,3  entity='rotation'  MOVE: funnel -> ground
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+   >> 6. Drops to the ground.
+
+propara-583,6,4  entity='funnel; tornado'  MOVE: ? -> ground
+      1. Warm, humid low-pressure air rises.
+      2. Creates a strong updraft.
+      3. Dry, cold high-pressure air is punched through.
+      4. The opposing winds create rotation.
+      5. When the rotation is violent enough a funnel forms.
+   >> 6. Drops to the ground.
+
+propara-600,2,2  entity='energy'  CREATE: - -> engine
+      1. Fuel is converted to energy when air and petrol mix.
+   >> 2. The car engine burns the mix of air and petrol.
+      3. Hot gas from the burning pushes the pistons.
+      4. The resulting energy powers the crankshaft.
+      5. Crankshaft powers the gears.
+      6. The gears make the wheels roll.
+
+propara-600,2,3  entity='hot gas'  CREATE: - -> engine
+      1. Fuel is converted to energy when air and petrol mix.
+   >> 2. The car engine burns the mix of air and petrol.
+      3. Hot gas from the burning pushes the pistons.
+      4. The resulting energy powers the crankshaft.
+      5. Crankshaft powers the gears.
+      6. The gears make the wheels roll.
+
+propara-600,3,2  entity='energy'  MOVE: engine -> piston
+      1. Fuel is converted to energy when air and petrol mix.
+      2. The car engine burns the mix of air and petrol.
+   >> 3. Hot gas from the burning pushes the pistons.
+      4. The resulting energy powers the crankshaft.
+      5. Crankshaft powers the gears.
+      6. The gears make the wheels roll.
+
+propara-600,5,2  entity='energy'  MOVE: crankshaft -> gear
+      1. Fuel is converted to energy when air and petrol mix.
+      2. The car engine burns the mix of air and petrol.
+      3. Hot gas from the burning pushes the pistons.
+      4. The resulting energy powers the crankshaft.
+   >> 5. Crankshaft powers the gears.
+      6. The gears make the wheels roll.
+
+propara-600,6,2  entity='energy'  MOVE: gear -> wheel
+      1. Fuel is converted to energy when air and petrol mix.
+      2. The car engine burns the mix of air and petrol.
+      3. Hot gas from the burning pushes the pistons.
+      4. The resulting energy powers the crankshaft.
+      5. Crankshaft powers the gears.
+   >> 6. The gears make the wheels roll.
+
+propara-653,2,0  entity='seed'  DESTROY: ? -> -
+      1. A seed is planted.
+   >> 2. It becomes a seedling.
+      3. It grows into a tree.
+      4. The tree grows flowers.
+      5. The flowers become fruit.
+      6. The fruits contain seeds for new trees.
+
+propara-660,5,1  entity='organic nitrogen'  MOVE: plant -> fungus
+      1. Nitrogen-fixing bacteria convert atmospheric nitrogen to organic nitrogen.
+      2. Plants absorb organic nitrogen from the soil through their roots.
+      3. Animals eat the plants.
+      4. Plants and animals die.
+   >> 5. Animals expel wastes.
+      6. Fungi convert organic nitrogen to ammonium.
+      7. Nitrifying bacteria convert ammonium to nitrate.
+      8. Bacteria convert nitrate to nitrogen gas.
+      9. Nitrogen gas escapes from soil into the atmosphere.
+
+propara-661,8,1  entity='ammonium'  MOVE: soil -> air
+      1. Fixation is the first step in the process of making nitrogen usable by plants. Here bacteria change nitrogen into ammonium.
+      2. Nitrification is the process by which ammonium gets changed into nitrates by bacteria.
+      3. Nitrates are what the plants can then absorb.
+      4. Assimilation is how plants get nitrogen.
+      5. They absorb nitrates from the soil into their roots. Then the nitrogen gets used in amino acids, nucleic acids, and chlorophyll.
+      6. Ammonification is part of the decaying process.
+      7. When a plant or animal dies, decomposers like fungi and bacteria turn the nitrogen back into ammonium so it can reenter the nitrogen cycle.
+   >> 8. Denitrification is when extra nitrogen in the soil gets put back out into the air.
+      9. There are special bacteria that perform this task as well.
+
+propara-695,7,3  entity='rain'  MOVE: earth -> ocean , lake , or river
+      1. During evaporation the sun heats up water in rivers or lakes or the ocean and turns it into vapor or steam.
+      2. The water vapor or steam leaves the river, lake or ocean and goes into the air.
+      3. Water vapor in the air gets cold and changes back into liquid, forming clouds, which is called condensation.
+      4. Precipitation occurs when so much water has condensed that the air cannot hold it anymore.
+      5. Water falls back to the earth in the form of rain, hail, sleet or snow.
+      6. When water ends up on land, it will either soak into the earth and become part of the "ground water" for animals or plants to drink.
+   >> 7. It may also run into the oceans, lakes, or rivers where the cycle starts again.
+
+propara-695,7,4  entity='hail'  MOVE: earth -> ocean , lake , or river
+      1. During evaporation the sun heats up water in rivers or lakes or the ocean and turns it into vapor or steam.
+      2. The water vapor or steam leaves the river, lake or ocean and goes into the air.
+      3. Water vapor in the air gets cold and changes back into liquid, forming clouds, which is called condensation.
+      4. Precipitation occurs when so much water has condensed that the air cannot hold it anymore.
+      5. Water falls back to the earth in the form of rain, hail, sleet or snow.
+      6. When water ends up on land, it will either soak into the earth and become part of the "ground water" for animals or plants to drink.
+   >> 7. It may also run into the oceans, lakes, or rivers where the cycle starts again.
+
+propara-695,7,5  entity='sleet'  MOVE: earth -> ocean , lake , or river
+      1. During evaporation the sun heats up water in rivers or lakes or the ocean and turns it into vapor or steam.
+      2. The water vapor or steam leaves the river, lake or ocean and goes into the air.
+      3. Water vapor in the air gets cold and changes back into liquid, forming clouds, which is called condensation.
+      4. Precipitation occurs when so much water has condensed that the air cannot hold it anymore.
+      5. Water falls back to the earth in the form of rain, hail, sleet or snow.
+      6. When water ends up on land, it will either soak into the earth and become part of the "ground water" for animals or plants to drink.
+   >> 7. It may also run into the oceans, lakes, or rivers where the cycle starts again.
+
+propara-695,7,6  entity='snow'  MOVE: earth -> ocean , lake , or river
+      1. During evaporation the sun heats up water in rivers or lakes or the ocean and turns it into vapor or steam.
+      2. The water vapor or steam leaves the river, lake or ocean and goes into the air.
+      3. Water vapor in the air gets cold and changes back into liquid, forming clouds, which is called condensation.
+      4. Precipitation occurs when so much water has condensed that the air cannot hold it anymore.
+      5. Water falls back to the earth in the form of rain, hail, sleet or snow.
+      6. When water ends up on land, it will either soak into the earth and become part of the "ground water" for animals or plants to drink.
+   >> 7. It may also run into the oceans, lakes, or rivers where the cycle starts again.
+
+propara-696,3,0  entity='water vapor'  MOVE: water droplet -> ?
+      1. Air contains invisible moisture called water vapor.
+      2. Excess water vapor is condensed out as water in the form of water droplets.
+   >> 3. Water droplets are carried up into the clouds.
+      4. The clouds become heavy with water droplets.
+      5. When the cloud is saturated.
+      6. Rain will fall.
+
+propara-696,5,0  entity='water vapor'  MOVE: ? -> cloud
+      1. Air contains invisible moisture called water vapor.
+      2. Excess water vapor is condensed out as water in the form of water droplets.
+      3. Water droplets are carried up into the clouds.
+      4. The clouds become heavy with water droplets.
+   >> 5. When the cloud is saturated.
+      6. Rain will fall.
+
+propara-696,6,0  entity='water vapor'  MOVE: cloud -> ?
+      1. Air contains invisible moisture called water vapor.
+      2. Excess water vapor is condensed out as water in the form of water droplets.
+      3. Water droplets are carried up into the clouds.
+      4. The clouds become heavy with water droplets.
+      5. When the cloud is saturated.
+   >> 6. Rain will fall.
+
+propara-696,6,1  entity='water droplets'  MOVE: cloud -> ?
+      1. Air contains invisible moisture called water vapor.
+      2. Excess water vapor is condensed out as water in the form of water droplets.
+      3. Water droplets are carried up into the clouds.
+      4. The clouds become heavy with water droplets.
+      5. When the cloud is saturated.
+   >> 6. Rain will fall.
+
+propara-697,5,0  entity='water'  MOVE: cloud -> area below the cloud
+      1. Water beings to evaporate from bodies of water.
+      2. The water condenses into clouds.
+      3. The clouds travel and accumulate more water.
+      4. The clouds reach a point where they cannot hold any more water.
+   >> 5. It begins to rain on areas below the clouds.
+
+propara-1031,1,1  entity='bones'  CREATE: - -> mud or soil
+   >> 1. A plant or animal dies in mud or soil.
+      2. The bones are all that remains.
+      3. Over time the bones are covered in sediment.
+      4. The sediment becomes rock.
+      5. The rock becomes a fossil.
+
+propara-1032,3,0  entity='animals'  DESTROY: mud -> -
+      1. Most fossils formed when animals or plants die in wet environment.
+      2. The animals and plants are then buried in mud.
+   >> 3. Soft tissues decompose.
+      4. Bones and hard tissues remain.
+      5. Sediment builds up over the remains over a period of time.
+      6. The sediment hardens into rock.
+
+propara-1032,3,1  entity='plants'  DESTROY: mud -> -
+      1. Most fossils formed when animals or plants die in wet environment.
+      2. The animals and plants are then buried in mud.
+   >> 3. Soft tissues decompose.
+      4. Bones and hard tissues remain.
+      5. Sediment builds up over the remains over a period of time.
+      6. The sediment hardens into rock.
+
+propara-1033,3,1  entity='skeleton'  CREATE: - -> mud
+      1. An animal dies.
+      2. The animal is buried fast under mud.
+   >> 3. The soft parts of the animal's body rot away.
+      4. The mud around the skeleton turns into rock.
+      5. The skeleton dissolves.
+      6. A mold is left in the mud where the skeleton was.
+
+propara-1033,5,3  entity='mold'  CREATE: - -> mud
+      1. An animal dies.
+      2. The animal is buried fast under mud.
+      3. The soft parts of the animal's body rot away.
+      4. The mud around the skeleton turns into rock.
+   >> 5. The skeleton dissolves.
+      6. A mold is left in the mud where the skeleton was.
+
+propara-1240,3,1  entity='Heat'  MOVE: refrigerant -> coil
+      1. Fans blow air onto the evaporator's coils.
+      2. The refrigerant within the coils absorbs the heat.
+   >> 3. The refrigerant changes from a liquid to a gas.
+      4. The compressor compresses the gas, increasing the pressure.
+      5. The hot, pressurized gas moves to the condenser.
+      6. The gas condenses in the condenser and becomes a liquid again.
+      7. Heat is radiated away from the condenser.
+      8. The cooled liquid is returned to the evaporator.
+
+propara-1240,4,0  entity='Air'  MOVE: evaporator 's coil -> ?
+      1. Fans blow air onto the evaporator's coils.
+      2. The refrigerant within the coils absorbs the heat.
+      3. The refrigerant changes from a liquid to a gas.
+   >> 4. The compressor compresses the gas, increasing the pressure.
+      5. The hot, pressurized gas moves to the condenser.
+      6. The gas condenses in the condenser and becomes a liquid again.
+      7. Heat is radiated away from the condenser.
+      8. The cooled liquid is returned to the evaporator.
+
+propara-1240,5,4  entity='Liquid'  CREATE: - -> condenser
+      1. Fans blow air onto the evaporator's coils.
+      2. The refrigerant within the coils absorbs the heat.
+      3. The refrigerant changes from a liquid to a gas.
+      4. The compressor compresses the gas, increasing the pressure.
+   >> 5. The hot, pressurized gas moves to the condenser.
+      6. The gas condenses in the condenser and becomes a liquid again.
+      7. Heat is radiated away from the condenser.
+      8. The cooled liquid is returned to the evaporator.
+
+propara-1240,6,1  entity='Heat'  DESTROY: coil -> -
+      1. Fans blow air onto the evaporator's coils.
+      2. The refrigerant within the coils absorbs the heat.
+      3. The refrigerant changes from a liquid to a gas.
+      4. The compressor compresses the gas, increasing the pressure.
+      5. The hot, pressurized gas moves to the condenser.
+   >> 6. The gas condenses in the condenser and becomes a liquid again.
+      7. Heat is radiated away from the condenser.
+      8. The cooled liquid is returned to the evaporator.
+
+propara-725,1,1  entity='soft tissues'  MOVE: ? -> mud and silt
+   >> 1. Most fossils are formed when a plant or animal dies in a watery environment and is buried in mud and silt.
+      2. Soft tissues quickly decompose leaving the hard bones or shells behind.
+      3. Over time sediment builds over the top and hardens into rock.
+      4. As the encased bones decay, minerals seep in replacing the organic material cell by cell in a process called "petrification.".
+      5. Alternatively the bones may completely decay leaving a cast of the organism.
+      6. He void left behind may then fill with minerals making a stone replica of the organism.
+
+propara-725,1,4  entity='bones'  MOVE: watery environment -> mud and silt
+   >> 1. Most fossils are formed when a plant or animal dies in a watery environment and is buried in mud and silt.
+      2. Soft tissues quickly decompose leaving the hard bones or shells behind.
+      3. Over time sediment builds over the top and hardens into rock.
+      4. As the encased bones decay, minerals seep in replacing the organic material cell by cell in a process called "petrification.".
+      5. Alternatively the bones may completely decay leaving a cast of the organism.
+      6. He void left behind may then fill with minerals making a stone replica of the organism.
+
+propara-725,2,0  entity='plant; animal'  DESTROY: mud and silt -> -
+      1. Most fossils are formed when a plant or animal dies in a watery environment and is buried in mud and silt.
+   >> 2. Soft tissues quickly decompose leaving the hard bones or shells behind.
+      3. Over time sediment builds over the top and hardens into rock.
+      4. As the encased bones decay, minerals seep in replacing the organic material cell by cell in a process called "petrification.".
+      5. Alternatively the bones may completely decay leaving a cast of the organism.
+      6. He void left behind may then fill with minerals making a stone replica of the organism.
+
+propara-725,3,4  entity='bones'  MOVE: mud and silt -> ?
+      1. Most fossils are formed when a plant or animal dies in a watery environment and is buried in mud and silt.
+      2. Soft tissues quickly decompose leaving the hard bones or shells behind.
+   >> 3. Over time sediment builds over the top and hardens into rock.
+      4. As the encased bones decay, minerals seep in replacing the organic material cell by cell in a process called "petrification.".
+      5. Alternatively the bones may completely decay leaving a cast of the organism.
+      6. He void left behind may then fill with minerals making a stone replica of the organism.
+
+propara-726,9,4  entity='hole'  CREATE: - -> rock
+      1. An animal lives a happy life.
+      2. The animal gets very old.
+      3. The animal dies.
+      4. The animal's skeleton sinks to the bottom of an ocean.
+      5. The skeleton is buried by mud.
+      6. More sand and mud fall on the skeleton.
+      7. Pressure increases on the skeleton from the weight of more mud.
+      8. The sand and mud turn into rock.
+   >> 9. The skeleton dissolves in the water.
+      10. A hole is preserved in rock that is the shape of the skeleton.
+
+propara-727,1,3  entity='mud; silt'  MOVE: watery environment -> ?
+   >> 1. An animal dies.
+      2. Is is buried in a watery environment.
+      3. The soft tissues quickly decompose.
+      4. The bones are left behind.
+      5. Over time, mud and silt accumulate over the bones.
+      6. Mud and silt harden into rock.
+      7. The bones slowly decay.
+      8. Minerals seep in.
+      9. Replace the organic materials.
+      10. You have a fossil.
+
+propara-727,2,0  entity='animal'  MOVE: ? -> watery environment
+      1. An animal dies.
+   >> 2. Is is buried in a watery environment.
+      3. The soft tissues quickly decompose.
+      4. The bones are left behind.
+      5. Over time, mud and silt accumulate over the bones.
+      6. Mud and silt harden into rock.
+      7. The bones slowly decay.
+      8. Minerals seep in.
+      9. Replace the organic materials.
+      10. You have a fossil.
+
+propara-727,3,0  entity='animal'  DESTROY: watery environment -> -
+      1. An animal dies.
+      2. Is is buried in a watery environment.
+   >> 3. The soft tissues quickly decompose.
+      4. The bones are left behind.
+      5. Over time, mud and silt accumulate over the bones.
+      6. Mud and silt harden into rock.
+      7. The bones slowly decay.
+      8. Minerals seep in.
+      9. Replace the organic materials.
+      10. You have a fossil.
+
+propara-727,6,2  entity='bones'  MOVE: mud and silt -> rock
+      1. An animal dies.
+      2. Is is buried in a watery environment.
+      3. The soft tissues quickly decompose.
+      4. The bones are left behind.
+      5. Over time, mud and silt accumulate over the bones.
+   >> 6. Mud and silt harden into rock.
+      7. The bones slowly decay.
+      8. Minerals seep in.
+      9. Replace the organic materials.
+      10. You have a fossil.
+
+propara-727,9,5  entity='minerals'  MOVE: bone -> rock
+      1. An animal dies.
+      2. Is is buried in a watery environment.
+      3. The soft tissues quickly decompose.
+      4. The bones are left behind.
+      5. Over time, mud and silt accumulate over the bones.
+      6. Mud and silt harden into rock.
+      7. The bones slowly decay.
+      8. Minerals seep in.
+   >> 9. Replace the organic materials.
+      10. You have a fossil.
+
+propara-903,4,0  entity='visible light; light'  DESTROY: photoreceptor cell -> -
+      1. Visible light enters through the lens.
+      2. The light enters into the retina.
+      3. The light is absorbed by photoreceptor cells.
+   >> 4. Which is turned into chemical energy.
+      5. The resulting information is interpreted by the brain as an image.
+
+propara-903,5,1  entity='chemical energy'  MOVE: photoreceptor cell -> brain
+      1. Visible light enters through the lens.
+      2. The light enters into the retina.
+      3. The light is absorbed by photoreceptor cells.
+      4. Which is turned into chemical energy.
+   >> 5. The resulting information is interpreted by the brain as an image.
+
+propara-904,3,1  entity='small image'  DESTROY: retina -> -
+      1. The cornea and lens refract light into a small image.
+      2. Shine it on the retina.
+   >> 3. The retina's rods and cones convert it to electrical pulses.
+      4. The optic nerve carries electrical pulses through the optic canal.
+      5. Nerve fibers end in the lateral geniculate nucleus and the visual cortex.
+
+propara-904,5,3  entity='electrical pulses'  MOVE: optic canal -> lateral geniculate nucleus and the visual cortex
+      1. The cornea and lens refract light into a small image.
+      2. Shine it on the retina.
+      3. The retina's rods and cones convert it to electrical pulses.
+      4. The optic nerve carries electrical pulses through the optic canal.
+   >> 5. Nerve fibers end in the lateral geniculate nucleus and the visual cortex.

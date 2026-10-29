@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Implicit State Changes in Procedural Text</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.9cm 1.9cm 1.7cm;
+    }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: #000;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 10.5pt;
+      line-height: 1.2;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: bold;
+      margin: 0 0 4pt;
+    }
+
+    .info {
+      text-align: center;
+      font-size: 10.5pt;
+      margin: 0 0 10pt;
+    }
+
+    .abstract {
+      margin: 0 1.2cm 10pt;
+      font-size: 10pt;
+    }
+
+    h2 {
+      font-size: 12pt;
+      font-weight: bold;
+      margin: 10pt 0 3pt;
+      break-after: avoid;
+    }
+
+    h3 {
+      font-size: 10.5pt;
+      font-weight: bold;
+      font-style: italic;
+      margin: 6pt 0 2pt;
+      break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 5pt;
+    }
+
+    .rq {
+      margin: 0 0 3pt 1cm;
+      padding-left: 1cm;
+      text-indent: -1cm;
+    }
+
+    ul {
+      margin: 0 0 5pt;
+      padding-left: 1.2cm;
+    }
+
+    li {
+      margin: 0 0 2pt;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 4pt auto 3pt;
+      font-size: 9pt;
+      break-inside: avoid;
+    }
+
+    th,
+    td {
+      padding: 1.5pt 6pt;
+      text-align: right;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    thead tr:first-child th {
+      border-top: 1.2pt solid #000;
+    }
+
+    th[colspan] {
+      text-align: center;
+    }
+
+    thead tr:last-child th {
+      border-bottom: 0.6pt solid #000;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 1.2pt solid #000;
+    }
+
+    tr.sep td {
+      border-top: 0.6pt solid #000;
+    }
+
+    .caption {
+      font-size: 9pt;
+      margin: 2pt 0 8pt;
+      text-align: justify;
+    }
+
+    figure {
+      margin: 6pt 0 4pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    .statement {
+      font-size: 9.5pt;
+    }
+
+    .statement p {
+      margin: 0 0 3pt;
+    }
+
+    .ref {
+      margin: 0 0 3pt;
+      padding-left: 1cm;
+      text-indent: -1cm;
+      text-align: left;
+    }
+
+    .ci {
+      font-size: 7pt;
+      color: #333;
+    }
+
+    .mono {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9pt;
+    }
+  </style>
+</head>
+
+<body>
+
+  <p class="title">Implicit State Changes in Procedural Text: Probing vs Fine-tuning</p>
+  <p class="info">Michail Pettas<br>Final project report, 5DV218 Spr&aring;kteknologi, HT26<br>October 2026</p>
+
+  <p class="abstract"><b>Abstract.</b> I test whether pretrained language models represent state changes that the text
+    leaves implicit, by training linear probes on the frozen hidden states of five Pythia models (160M&ndash;2.8B) on
+    ProPara and bAbI task 2 and comparing them with baselines, an untrained model, a control task and models fine-tuned
+    at two sizes. State change and location are decodable well above the untrained model and the control task (for
+    location clearly only from 1B up), but much less so when the entity is not named in the step: on ProPara the probes
+    separate changed from unchanged entities with an AUC of 0.80&ndash;0.83 when the entity is named and
+    0.70&ndash;0.74 when it is not, and they almost never predict an implicit change outright. Location accuracy grows
+    with model size; the signal for implicit changes does not. Fine-tuning the 160M and 410M models improves location
+    accuracy by 5&ndash;8 points, mostly for named entities, but does not separate implicit changes better than the
+    probe on the same model, and its advantage is smaller at 410M than at 160M. On this data, neither a larger model nor
+    fine-tuning adds information about implicit changes. Reading all implicit changes in the ProPara test set showed
+    that only about half are genuine inferences and a fifth are annotation errors.</p>
+
+  <h2>1&nbsp;&nbsp;Introduction</h2>
+  <p>Language models are now used to plan actions, in robotics and in assistants that follow instructions. Such a system
+    has to know where things end up even when the text never says so: that the fuel is gone once it has burned, or that
+    the tent is at the camp site after the car it was packed in drove there. If a model gets these implicit changes
+    wrong, it plans from a wrong state. When a model answers such a question wrongly, the information may be missing from
+    the model, or it may be present in its hidden states but not reach the answer. The two cases call for different
+    fixes. In the second case a small classifier on the frozen model recovers the information cheaply; in the first,
+    the model has to be trained further.</p>
+  <p>Recent work shows that language models from 410M parameters answer entity-tracking questions about naturalistic
+    stories at human level (Dro&#380;d&#380; and Heilbron, 2026), but direct prompting does not reveal internal
+    representations. Earlier probing work recovered world states from models trained on board games
+    (Li et al., 2023) or fine-tuned on the domain (Li, Nye and Andreas, 2021). I ask this question for pretrained models
+    on implicit state changes, across a suite of models differing only in size.</p>
+  <p class="rq">RQ1:&nbsp;&nbsp;How accurately can an entity's state change and location be classified from the frozen
+    hidden states of a pretrained model?</p>
+  <p class="rq">RQ2:&nbsp;&nbsp;How far does accuracy drop when the entity is not mentioned in the sentence that changes
+    its state, compared with the baselines?</p>
+  <p class="rq">RQ3:&nbsp;&nbsp;How does this depend on model size, and how large is the gap between a frozen probe and a
+    fine-tuned model?</p>
+  <p><b>Hypothesis.</b> Pretrained models already represent implicit state changes, so probes on frozen hidden states
+    will beat the baselines on implicit instances, and the gap to the fine-tuned model will shrink as models get
+    larger. If the probes stay at baseline on implicit instances while the fine-tuned model is clearly better, the
+    hypothesis is rejected.</p>
+  <p>In short, the hypothesis holds only in part. The information is there, above chance and above an untrained model,
+    but it is weaker for implicit than for explicit changes, does not grow with size, and in accuracy on implicit
+    instances it does not clearly beat the simple baselines. Fine-tuning does not add it either; its advantage over the
+    probe is smaller at 410M than at 160M, as the hypothesis predicts, but mostly within the noise.</p>
+
+  <h2>2&nbsp;&nbsp;Literature review</h2>
+  <p><b>Tracking state in procedural text.</b> Dalvi et al. (2018) introduced ProPara, paragraphs about scientific
+    processes in which every participant's location is annotated after every step, and framed the task as filling this
+    grid. Their two neural models, one predicting each sentence's changes locally and one modelling the paragraph
+    globally, reached 34&ndash;45% on the paper's evaluation, against about 80% for humans. Tandon et al. (2018) added commonsense constraints and a structured search over
+    the whole grid (ProStruct), which removed implausible predictions such as an entity moving after it was destroyed.
+    Later systems built on pretrained transformers; Rajaby Faghihi and Kordjamshidi (2021), for example, marked each
+    token as past, current or future relative to the step being asked about and fine-tuned a transformer on ProPara.
+    In all of these the model is trained for the task, so they do not tell whether the pretrained representations
+    already contain the state.</p>
+  <p><b>Probing for world state.</b> Li, Nye and Andreas (2021) trained probes on the encoder states of BART and T5
+    fine-tuned on two domains (Alchemy and TextWorld) and recovered each entity's state from the representation of its
+    mention well above baselines; editing that representation changed the model's later predictions, so the state
+    was also used. Li et al. (2023) trained a GPT model only on Othello move sequences and recovered the board state
+    from its activations, with non-linear probes clearly better than linear ones, and again changed the model's moves by
+    editing the state. Toshniwal et al. (2022) showed that language models trained on chess notation learn to track the
+    board well enough to predict legal moves. These studies show that sequence models <i>can</i> build world
+    representations, but in synthetic domains or after domain training.</p>
+  <p><b>Entity tracking in pretrained language models.</b> Kim and Schuster (2023) tested in-context entity tracking
+    with descriptions of boxes and their contents and found non-trivial tracking only in models with large amounts of
+    code in pretraining, while a smaller T5 model could learn the task through fine-tuning. Prakash et al.
+    (2024) traced the circuit that performs entity tracking in LLaMA-7B and found that fine-tuned variants of the
+    model use the same circuit, only more effectively: fine-tuning enhanced an existing mechanism instead of building a
+    new one. Dro&#380;d&#380; and Heilbron (2026) compared models with 48 human readers on naturalistic narratives and
+    found human-level tracking already at 410M parameters, improving with size.</p>
+  <p><b>Probing methodology.</b> A probe that is too expressive can learn the task itself. Hewitt and Liang (2019)
+    proposed control tasks, in which each word type gets a random label, and measured a probe's selectivity, its
+    accuracy on the real task minus that on the control; they recommend simple, regularised probes. Belinkov (2022)
+    reviews further pitfalls: probe accuracy shows that information is decodable, not that the model uses it, and needs
+    to be compared with baselines such as probes on an untrained model of the same architecture. Marks and Tegmark
+    (2024) found that the truth of simple statements is linearly decodable from the hidden state at the end of the
+    statement, which motivates the way I probe for location below.</p>
+  <p><b>Framing.</b> Following ProPara, I frame the task as classification of one entity at one step: its state change
+    (CREATE, MOVE, DESTROY, NONE) and its location after the step. What is new is the comparison of the same
+    classification done two ways, by a linear probe on a frozen model and by fine-tuning, across models of different
+    size trained on identical data, evaluated separately on instances where the entity is named in the step and on
+    those where it is not.</p>
+
+  <h2>3&nbsp;&nbsp;Materials and methods</h2>
+  <h3>3.1&nbsp;&nbsp;Data</h3>
+  <p><b>ProPara</b> (Dalvi et al., 2018) has 488 crowd-written paragraphs about scientific processes (photosynthesis,
+    erosion, digestion, &hellip;), 6.8 sentences long on average, with the participants of each process and a grid of
+    their locations before the first and after every sentence. A location is a span such as <i>soil</i> or <i>deep in
+    the earth</i>, '&minus;' (does not exist) or '?' (exists, location unknown). I use the official split (391/43/54
+    paragraphs), which is by process, so test paragraphs describe processes not seen in training. <b>bAbI task 2</b>
+    (Weston et al., 2016) has machine-generated stories in which people move between six places and pick up and drop
+    objects (<i>Mary got the milk there. Mary went to the hallway.</i>); an object's location changes when the person
+    carrying it moves. bAbI only annotates the answers to its questions, so I simulated every story (who is where, who
+    holds what) to get each object's location after each sentence; the simulation agrees with all 2,000 answers in the
+    1k training and test files. I use the 1k version, with the last 20 of its 200 training stories as development set.
+  </p>
+  <!-- BEGIN:data -->
+<table><thead><tr><th></th><th>split</th><th>documents</th><th>instances</th><th>implicit</th><th>changes</th><th>implicit changes</th><th>candidates</th></tr></thead><tbody>
+<tr><td>ProPara</td><td>train</td><td>391</td><td>10,356</td><td>6,862</td><td>2,460</td><td>543</td><td>3.0</td></tr>
+<tr><td></td><td>dev</td><td>43</td><td>1,204</td><td>763</td><td>310</td><td>71</td><td>3.3</td></tr>
+<tr><td></td><td>test</td><td>54</td><td>1,674</td><td>1,111</td><td>401</td><td>94</td><td>3.2</td></tr>
+<tr class="sep"><td>bAbI task 2</td><td>train</td><td>180</td><td>9,578</td><td>8,174</td><td>893</td><td>555</td><td>5.4</td></tr>
+<tr><td></td><td>dev</td><td>20</td><td>1,064</td><td>906</td><td>92</td><td>58</td><td>5.4</td></tr>
+<tr><td></td><td>test</td><td>200</td><td>11,132</td><td>9,607</td><td>1,057</td><td>683</td><td>5.4</td></tr>
+</tbody></table>
+<!-- END:data -->
+  <p class="caption"><b>Table 1.</b> Instances per split. <i>Implicit</i>: the entity is not named in the step;
+    <i>changes</i>: its state changes in the step; <i>candidates</i>: candidate locations per document.</p>
+  <p><b>Instances.</b> One instance is one entity after one step. Its state change is derived from the locations before
+    and after the step as in ProPara: CREATE ('&minus;' to anything else), DESTROY (anything to '&minus;'), MOVE (one
+    location to a different one, including '?' to a known place) and NONE otherwise. Its location label is the location
+    after the step, chosen among the candidate locations of the document plus '&minus;' and '?'. For ProPara the
+    candidates are all locations annotated in the paragraph; for bAbI they are all places named in the story. An
+    instance is <i>explicit</i> if the entity is named in the sentence of that step (any of its names in ProPara, which
+    lists alternatives such as <i>water; droplets</i>, matched on the head noun with singular and plural forms) and
+    <i>implicit</i> otherwise. The comparison that RQ2 asks about is between explicit and implicit instances whose state
+    changes in that step: in ProPara 307 and 94 test instances.</p>
+  <p><b>Reading the implicit changes.</b> I take the annotations as correct but checked them: I read all 94 implicit
+    changes in the ProPara test split and sorted them into three groups
+    (<span class="mono">results/implicit_test_verdicts.csv</span>). In 43 the entity is not referred to and the change
+    follows from the step by inference: <i>Animals eat the plants</i> moves the nitrogen in the plants into the animals;
+    <i>The skeleton dissolves</i> creates a mold. In 31 the entity is referred to by another expression: a pronoun
+    (<i>It grows into a small seedling</i>), a subject left out (<i>Drops to the ground</i>) or another word (the
+    <i>signals</i> are called <i>information</i>). In 20 the change does not follow from the step: it is annotated
+    one step too early or too late, it is not supported by the text, or only the spelling of the location changes
+    (<i>steamy, swampy area</i> to <i>swampy area</i>). So about half of the "implicit" changes are implicit in the
+    sense the study is about, and a fifth are annotation noise. I report the three groups separately. The verdicts were
+    written before any model was run, so they could not be influenced by the predictions.</p>
+
+  <div class="statement">
+    <p><b>Data statement</b> (short form, after Bender and Friedman, 2018).</p>
+    <p><i>ProPara.</i> Curation rationale: paragraphs collected to test comprehension of processes, with grids made for
+      the purpose. Language: English, written; the variety is not documented. Speakers: crowdworkers asked to describe
+      a process given a prompt; no demographic information is reported. Annotators: the grids were made by expert
+      annotators and checked by a second one, and the locations were filled in by five crowdworkers with 0.67 average
+      pairwise agreement; no demographics are reported. Speech situation: short explanatory texts written for the
+      dataset (published 2018), for an unspecified reader, at roughly school-science level. Text characteristics:
+      6&ndash;10 short sentences, often without a subject, with typos and errors (<i>Embryo is C.</i>); as Section 3.1
+      shows, about a fifth of the implicit changes are annotated at the wrong step or without support.</p>
+    <p><i>bAbI task 2.</i> Curation rationale: a synthetic test of reasoning from two facts. Language: English generated
+      from a small grammar (6 places, 4 people, 3 objects, 5 movement verbs); no speakers or annotators; the labels
+      are exact by construction. Text characteristics: 5-word sentences in stories of about 22 sentences; nothing
+      about it resembles natural text, which is why it is only the controlled companion to ProPara.</p>
+    <p><i>Both</i> were public on the web before 2020 and may be part of the Pile, Pythia's training data (Gao et al.,
+      2020); I could not check this.</p>
+  </div>
+
+  <h3>3.2&nbsp;&nbsp;Models and inputs</h3>
+  <p>I use the Pythia suite (Biderman et al., 2023) at 160M, 410M, 1B, 1.4B and 2.8B parameters on ProPara and at
+    160M, 410M and 1B on bAbI, whose longer stories make the larger models slow on the 8 GB GPU I used. All were trained
+    on the same data in the same order, so size is the only difference. For instance <i>(entity, step t)</i> the model reads the
+    document up to and including sentence <i>t</i>, preceded by Pythia's end-of-text token, and then one of two kinds of
+    continuation, for example for the entity <i>seed</i> after step 2 of a paragraph about seed dispersal:</p>
+  <ul>
+    <li>a <b>query</b>: <span class="mono">&hellip; An animal eats the fruit from a plant. The seed is</span></li>
+    <li>a <b>statement</b> per candidate location: <span class="mono">&hellip; An animal eats the fruit from a plant. The
+        seed is in the animal.</span></li>
+  </ul>
+  <p>I take the hidden state of the last token of each continuation at every layer (the embedding output and every
+    transformer block). Query states feed the state-change and existence probes; statement states feed the
+    location probe. Each entity also gets a query after an empty text, its state before step 1. The prefix is run once
+    and its key/value cache shared by all continuations of the step, which gives the same states as separate runs (up
+    to float32 rounding, checked for each model). All models compute in float32: running Pythia-160M in float16 or
+    bfloat16 changed the middle-layer states by 5&ndash;30% (relative norm), which would add noise to the probes and
+    differ between sizes. To fit 2.8B in the GPU's 8 GB, weights are stored in float16, as Pythia distributes them, and
+    cast to float32 layer by layer, which is exact.</p>
+
+  <h3>3.3&nbsp;&nbsp;Probes</h3>
+  <p>All probes are logistic regression with an L2 penalty, on features standardised with training statistics (Pythia
+    has a few dimensions with very large values that would otherwise dominate the penalty; Sun et al., 2024). They are
+    fitted with L-BFGS on the full training set. The penalty (10<sup>&minus;4</sup> to 10<sup>&minus;1</sup>) and the
+    layer are chosen on the development split, separately for each probe.</p>
+  <ul>
+    <li><b>State change</b> (4 classes) on the query states after and before the step, side by side. A first version on
+      the state after the step only never predicted a change for an implicit instance with Pythia-160M: a change is a
+      relation between two states, and the model can encode where the seed is without encoding that it has just
+      moved.</li>
+    <li><b>Existence</b> (3 classes: does not exist, unknown, known place) on the query state after the step.</li>
+    <li><b>Location</b>: a linear score for each candidate statement, normalised with a softmax over the candidates of
+      the instance (a conditional logit), trained on instances whose gold location is a known place.</li>
+  </ul>
+  <p>The location prediction is '&minus;' or '?' if the existence probe says so and otherwise the highest-scoring
+    candidate, so it is right only if both parts are right. I use two controls. The <b>control task</b> (Hewitt and
+    Liang, 2019) replaces the labels with ones that depend only on names: every entity name gets a random change label,
+    drawn from the training distribution, and every location name a random rank, and the control's location is the
+    candidate with the highest rank. A probe can learn these only by memorising names it saw in training, as a probe
+    that learns the task itself would. Selectivity is the real task's score minus the control's (ProPara only, as bAbI
+    has three object names and six places, which makes any name-based control trivial). The <b>untrained model</b> is
+    Pythia-410M at step 0 of training, the
+    same network before it saw any text: a probe on it can only use what the input tokens give a linear classifier.</p>
+
+  <h3>3.4&nbsp;&nbsp;Fine-tuning</h3>
+  <p>The fine-tuned models read the same inputs and have the same three linear heads on the last-token state of the
+    final layer; the difference to the probe is that every weight is trained. The loss is the sum of the three
+    cross-entropies. I fine-tune Pythia-160M and 410M on ProPara, so that probe and fine-tuning can be compared at two
+    sizes and the hypothesis that the gap between them shrinks with size can be tested directly, and 160M on bAbI.
+    Training uses AdamW (Loshchilov and Hutter, 2019) with 8-bit optimiser states (Dettmers et al., 2022) to fit in
+    memory, learning rate 2&middot;10<sup>&minus;5</sup> for the model and 10<sup>&minus;3</sup> for the heads, 6%
+    warm-up and linear decay, 8 (document, step) groups per update and gradient clipping at 1. I train 5 epochs on
+    ProPara and 3 on bAbI, whose epochs take twice as long, and keep the epoch with the best development score, the
+    mean of change macro-F1 and location accuracy. Every model is fine-tuned with two seeds; the tables average their
+    predictions and Table 6 gives each run.</p>
+
+  <h3>3.5&nbsp;&nbsp;Baselines and evaluation</h3>
+  <p>There are three baselines: <b>majority</b>, the most frequent training label (NONE for change;
+    for location the most frequent training label possible for the instance, which on ProPara is '&minus;');
+    <b>previous</b>, the entity stays where it was, using the gold location before the step (so it is right on every
+    unchanged instance and wrong on every change); and <b>recent</b>, the candidate location mentioned last in the text
+    so far, '?' if there is none (location only). The previous-location baseline is given the gold state before the
+    step, which no probe or fine-tuned model has, so it is a reference point for how far stability alone goes rather
+    than a competitor: a system that has to track the state from the text can only match it by being right about every
+    step before. I report accuracy for location and accuracy and macro-F1 for state change, on the test split, for all
+    instances and for the subsets. Location has no fixed set of classes (candidates differ per paragraph), so macro-F1 is
+    only reported for change. These metrics depend on the decision threshold, and that matters for implicit
+    instances: only 8% of the implicit training instances change, so a well-calibrated classifier will rarely predict
+    a change for one even when its features carry information about it. I therefore also report the <b>change
+    AUC</b>: the ROC-AUC of the predicted probability of a change (1 &minus; P(NONE)) against whether the state changed,
+    computed within a subset. It is the probability that a changed instance gets a higher score than an unchanged one;
+    0.5 means no information, and the baselines, which give every instance the same score, are at 0.5 by
+    construction.</p>
+  <p>In bAbI an object only changes location when the person carrying it moves, and that sentence names the new
+    place, so the most-recent-location baseline is right on every implicit change by construction. The harder part is
+    knowing <i>which</i> objects move. I therefore also evaluate on the steps where someone moves and an object that
+    is not named already has a known location: the object moves if the mover carries it and stays otherwise. The
+    previous-location baseline is right on every object that stays and the recent-location baseline on every object
+    that moves, and each is wrong on nearly all of the other group, so only a system that tracks who carries what can
+    be right on both. Instances of one document are not independent, so 95% confidence intervals come from a
+    bootstrap over documents (1,000 resamples; Efron and Tibshirani, 1993); all systems and subsets are scored on the
+    same resamples, which makes differences between them paired. Code, predictions and logs are in the submitted
+    project folder.</p>
+
+  <h2>4&nbsp;&nbsp;Results</h2>
+  <h3>4.1&nbsp;&nbsp;Overall (RQ1)</h3>
+  <p>Table 2 gives the test results. On ProPara the probes classify the state change with a macro-F1 of 58&ndash;64,
+    against 22 for the majority baseline, and their change probability separates changed from unchanged instances
+    with an AUC of 0.86&ndash;0.87. The same probes on the untrained network reach 29.5 and 0.59, so the information
+    comes from pretraining and not from the probe. Location accuracy rises with size from 50.7 (160M) to 62.5 (2.8B)
+    but stays below the previous-location baseline (76.0), which is given the gold location before the step and is
+    therefore right whenever nothing changes, as is the case for three quarters of the instances. The limiting part is the existence probe (does not exist / unknown / known place),
+    whose macro-F1 stays between 48 and 58; the candidate part alone picks the right place for 63% (160M) to 75% (2.8B)
+    of the instances with a known location, against 44% for a random candidate (Figure 1, right). On bAbI the change
+    signal is stronger (AUC 0.89&ndash;0.94) but locations are hard: the probes pick the right room for only 32&ndash;35%
+    of the objects, against 18% by chance, so their location accuracy (55&ndash;57) is far below that of keeping the
+    previous location (90.5).</p>
+  <!-- BEGIN:overall -->
+<table><thead><tr><th></th><th colspan="3">ProPara</th><th colspan="3">bAbI task 2</th></tr><tr><th></th><th>location acc.</th><th>change F1</th><th>change AUC</th><th>location acc.</th><th>change F1</th><th>change AUC</th></tr></thead><tbody>
+<tr><td>Majority</td><td>52.6 <span class="ci">47&ndash;58</span></td><td>21.6 <span class="ci">21&ndash;22</span></td><td>&ndash;</td><td>45.5 <span class="ci">43&ndash;48</span></td><td>47.5 <span class="ci">47&ndash;48</span></td><td>&ndash;</td></tr>
+<tr><td>Previous location (gold)</td><td>76.0 <span class="ci">73&ndash;79</span></td><td>21.6 <span class="ci">21&ndash;22</span></td><td>&ndash;</td><td>90.5 <span class="ci">90&ndash;91</span></td><td>47.5 <span class="ci">47&ndash;48</span></td><td>&ndash;</td></tr>
+<tr><td>Most recent location</td><td>22.6 <span class="ci">18&ndash;28</span></td><td>&ndash;</td><td>&ndash;</td><td>21.2 <span class="ci">19&ndash;23</span></td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr class="sep"><td>Probe 160M</td><td>50.7 <span class="ci">46&ndash;55</span></td><td>58.0 <span class="ci">53&ndash;63</span></td><td>86.3 <span class="ci">83&ndash;89</span></td><td>55.8 <span class="ci">54&ndash;58</span></td><td>71.5 <span class="ci">70&ndash;73</span></td><td>88.6 <span class="ci">87&ndash;90</span></td></tr>
+<tr><td>Probe 410M</td><td>58.7 <span class="ci">54&ndash;63</span></td><td>62.7 <span class="ci">58&ndash;67</span></td><td>86.9 <span class="ci">84&ndash;90</span></td><td>54.8 <span class="ci">52&ndash;58</span></td><td>76.5 <span class="ci">75&ndash;78</span></td><td>93.7 <span class="ci">93&ndash;94</span></td></tr>
+<tr><td>Probe 1B</td><td>61.1 <span class="ci">57&ndash;65</span></td><td>61.7 <span class="ci">57&ndash;66</span></td><td>86.0 <span class="ci">83&ndash;89</span></td><td>57.1 <span class="ci">55&ndash;59</span></td><td>77.3 <span class="ci">76&ndash;79</span></td><td>93.9 <span class="ci">93&ndash;95</span></td></tr>
+<tr><td>Probe 1.4B</td><td>61.8 <span class="ci">57&ndash;66</span></td><td>60.9 <span class="ci">56&ndash;65</span></td><td>85.6 <span class="ci">82&ndash;89</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr><td>Probe 2.8B</td><td>62.5 <span class="ci">58&ndash;67</span></td><td>64.4 <span class="ci">59&ndash;69</span></td><td>86.8 <span class="ci">84&ndash;89</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr class="sep"><td>Probe, 410M untrained</td><td>31.5 <span class="ci">26&ndash;38</span></td><td>29.5 <span class="ci">27&ndash;32</span></td><td>59.0 <span class="ci">55&ndash;63</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr class="sep"><td>Fine-tuned 160M</td><td>58.5 <span class="ci">54&ndash;63</span></td><td>60.1 <span class="ci">55&ndash;66</span></td><td>83.9 <span class="ci">81&ndash;87</span></td><td>57.9 <span class="ci">56&ndash;60</span></td><td>73.1 <span class="ci">72&ndash;75</span></td><td>91.3 <span class="ci">90&ndash;92</span></td></tr>
+<tr><td>Fine-tuned 410M</td><td>63.9 <span class="ci">60&ndash;68</span></td><td>62.7 <span class="ci">58&ndash;67</span></td><td>84.8 <span class="ci">81&ndash;88</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+</tbody></table>
+<!-- END:overall -->
+  <p class="caption"><b>Table 2.</b> Test results on all instances, with 95% bootstrap intervals in small print. Location
+    accuracy, state-change macro-F1 and change AUC (0.5 = no information; not defined for the baselines, which give
+    every instance the same score). Probes use the layer that is best on the development split.</p>
+  <p>Figure 1 shows where the information is. The change signal for implicit instances appears in the first third of
+    the network and stays flat after that; the location probe keeps improving into the upper half of the larger models.
+    On the untrained network both stay within 0.1 of chance at every layer. The control task (Table 3) separates the
+    two parts. For state change, every probe on a trained model beats its name-only control by 12&ndash;16 points of
+    macro-F1, against 1 point on the untrained network. For location the control is a stronger competitor: a probe
+    that has only learned which place names tend to be the answer picks the right candidate for 46&ndash;58% of the
+    instances, against 44% at random. The location probes on 160M and 410M beat it by only 7 points, those on 1B to
+    2.8B by 16&ndash;28. On the untrained network the location probe does worse on the real task than on the control
+    (&minus;13 points): the place names are visible to it, the entity's state is not.</p>
+  <figure>
+    <img src="results/figures/layers.png" alt="Probe scores per layer">
+    <p class="caption"><b>Figure 1.</b> Test score per layer, plotted against relative depth. Left: change AUC on implicit
+      instances. Right: accuracy of the location probe at picking the right candidate, on instances with a known
+      location. Dots mark the layer chosen on the development split. Grey: the untrained 410M network.</p>
+  </figure>
+  <!-- BEGIN:controls -->
+<table><thead><tr><th></th><th colspan="4">state change (macro-F1)</th><th colspan="4">location candidate (accuracy)</th></tr><tr><th></th><th>layer</th><th>task</th><th>control</th><th>selectivity</th><th>layer</th><th>task</th><th>control</th><th>selectivity</th></tr></thead><tbody>
+<tr><td>Probe 160M</td><td>7/12</td><td>58.0</td><td>46.3</td><td>+11.7</td><td>8/12</td><td>63.1</td><td>56.1</td><td>+6.9</td></tr>
+<tr><td>Probe 410M</td><td>12/24</td><td>62.7</td><td>49.2</td><td>+13.5</td><td>12/24</td><td>65.0</td><td>58.3</td><td>+6.7</td></tr>
+<tr><td>Probe 1B</td><td>9/16</td><td>61.7</td><td>48.4</td><td>+13.4</td><td>12/16</td><td>71.2</td><td>51.9</td><td>+19.4</td></tr>
+<tr><td>Probe 1.4B</td><td>12/24</td><td>60.9</td><td>44.9</td><td>+16.0</td><td>23/24</td><td>69.8</td><td>53.6</td><td>+16.2</td></tr>
+<tr><td>Probe 2.8B</td><td>12/32</td><td>64.4</td><td>50.2</td><td>+14.2</td><td>24/32</td><td>74.6</td><td>46.4</td><td>+28.2</td></tr>
+<tr><td>Probe, 410M untrained</td><td>4/24</td><td>29.5</td><td>28.5</td><td>+1.0</td><td>7/24</td><td>46.5</td><td>59.5</td><td>-13.0</td></tr>
+</tbody></table>
+<!-- END:controls -->
+  <p class="caption"><b>Table 3.</b> ProPara, control task (Hewitt and Liang, 2019) at the layer chosen for the real task:
+    test score of the task probe and of the same probe trained on name-only random labels, and their difference
+    (selectivity).</p>
+
+  <h3>4.2&nbsp;&nbsp;Explicit and implicit changes (RQ2)</h3>
+  <p>On ProPara every trained probe does clearly worse when the entity is not named in the step that changes it
+    (Table 4, Figure 2). Location accuracy on changed instances drops by 11&ndash;23 points, with a steeper decline in
+    the larger models (2.8B: 58.0 down to 38.3, a difference of 19.7, interval 6.9&ndash;32.8) because their gains come
+    from explicit changes. Change AUC falls from 0.80&ndash;0.83 on explicit to 0.70&ndash;0.74 on implicit instances, an
+    edge of 7.6&ndash;11.7 points whose interval excludes zero across all models. As predicted labels, implicit
+    changes are almost never detected: the probes call 2&ndash;10% of them a change, against 50&ndash;62% of explicit
+    changes. The most-recent-location heuristic does the opposite: it is better on implicit changes (52.1)
+    than on explicit ones (40.4), since a step moving an entity without naming it usually names the destination.</p>
+  <!-- BEGIN:propara -->
+<table><thead><tr><th></th><th colspan="3">location accuracy, changed instances</th><th colspan="3">change AUC</th></tr><tr><th></th><th>explicit (307)</th><th>implicit (94)</th><th>genuine (43)</th><th>explicit (563)</th><th>implicit (1111)</th><th>genuine (1060)</th></tr></thead><tbody>
+<tr><td>Majority</td><td>32.2 <span class="ci">27&ndash;37</span></td><td>23.4 <span class="ci">12&ndash;36</span></td><td>18.6 <span class="ci">6&ndash;33</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr><td>Previous location (gold)</td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr><td>Most recent location</td><td>40.4 <span class="ci">33&ndash;47</span></td><td>52.1 <span class="ci">40&ndash;66</span></td><td>62.8 <span class="ci">45&ndash;79</span></td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr>
+<tr class="sep"><td>Probe 160M</td><td>40.1 <span class="ci">35&ndash;46</span></td><td>28.7 <span class="ci">20&ndash;38</span></td><td>30.2 <span class="ci">17&ndash;44</span></td><td>80.1 <span class="ci">75&ndash;85</span></td><td>71.6 <span class="ci">65&ndash;78</span></td><td>67.6 <span class="ci">57&ndash;78</span></td></tr>
+<tr><td>Probe 410M</td><td>45.9 <span class="ci">39&ndash;53</span></td><td>30.9 <span class="ci">21&ndash;41</span></td><td>27.9 <span class="ci">15&ndash;43</span></td><td>81.3 <span class="ci">76&ndash;86</span></td><td>73.7 <span class="ci">69&ndash;79</span></td><td>73.3 <span class="ci">65&ndash;81</span></td></tr>
+<tr><td>Probe 1B</td><td>54.1 <span class="ci">48&ndash;60</span></td><td>30.9 <span class="ci">22&ndash;40</span></td><td>32.6 <span class="ci">20&ndash;45</span></td><td>80.2 <span class="ci">75&ndash;85</span></td><td>70.7 <span class="ci">65&ndash;77</span></td><td>72.3 <span class="ci">64&ndash;80</span></td></tr>
+<tr><td>Probe 1.4B</td><td>56.0 <span class="ci">49&ndash;63</span></td><td>35.1 <span class="ci">25&ndash;46</span></td><td>30.2 <span class="ci">17&ndash;45</span></td><td>81.6 <span class="ci">76&ndash;86</span></td><td>69.9 <span class="ci">64&ndash;76</span></td><td>64.4 <span class="ci">56&ndash;73</span></td></tr>
+<tr><td>Probe 2.8B</td><td>58.0 <span class="ci">51&ndash;65</span></td><td>38.3 <span class="ci">28&ndash;48</span></td><td>39.5 <span class="ci">26&ndash;55</span></td><td>82.9 <span class="ci">78&ndash;87</span></td><td>72.3 <span class="ci">68&ndash;77</span></td><td>73.3 <span class="ci">66&ndash;79</span></td></tr>
+<tr class="sep"><td>Probe, 410M untrained</td><td>22.5 <span class="ci">17&ndash;28</span></td><td>21.3 <span class="ci">14&ndash;30</span></td><td>14.0 <span class="ci">4&ndash;26</span></td><td>59.8 <span class="ci">54&ndash;66</span></td><td>53.7 <span class="ci">46&ndash;61</span></td><td>51.4 <span class="ci">43&ndash;61</span></td></tr>
+<tr class="sep"><td>Fine-tuned 160M</td><td>54.7 <span class="ci">48&ndash;61</span></td><td>30.9 <span class="ci">22&ndash;41</span></td><td>33.7 <span class="ci">21&ndash;49</span></td><td>78.9 <span class="ci">73&ndash;84</span></td><td>69.6 <span class="ci">64&ndash;75</span></td><td>68.9 <span class="ci">61&ndash;76</span></td></tr>
+<tr><td>Fine-tuned 410M</td><td>62.7 <span class="ci">57&ndash;69</span></td><td>31.9 <span class="ci">22&ndash;42</span></td><td>36.0 <span class="ci">22&ndash;49</span></td><td>81.3 <span class="ci">76&ndash;86</span></td><td>67.9 <span class="ci">61&ndash;75</span></td><td>65.4 <span class="ci">55&ndash;74</span></td></tr>
+</tbody></table>
+<!-- END:propara -->
+  <p class="caption"><b>Table 4.</b> ProPara test. Left: location accuracy on instances whose state changes, by whether
+    the entity is named in the step, and on the 43 implicit changes that I judged genuine inferences. Right: change AUC
+    within explicit and within implicit instances, and within the genuine changes together with all unchanged implicit
+    instances. Number of instances in brackets.</p>
+  <p>Against the baselines, the picture depends on the measure. In change macro-F1 on implicit instances the probes
+    beat the majority class by 5&ndash;9 points from 410M up (intervals exclude zero; at 160M the interval includes
+    zero). In location accuracy on implicit instances they do not: the majority location is '&minus;', which is right
+    for 62% of the implicit test instances because most entities that a step does not name do not exist yet or any
+    more, and the probes reach 57&ndash;67, a difference of &minus;5 to +4 points whose interval includes zero for every
+    model. On implicit changes they beat the majority class clearly only at 1.4B and 2.8B (+12 and +15 points), and
+    the previous location, which is wrong there by definition. They do not beat the most-recent-location heuristic on
+    implicit changes (38.3 against 52.1 at 2.8B, interval of the difference &minus;33 to +4), but that heuristic is
+    wrong on 87% of the implicit instances that do not change, and over all implicit instances it reaches 16.5
+    against the probes' 57&ndash;67. The noise in the annotation matters here.
+    On the 43 genuine implicit changes the AUC is 0.64&ndash;0.73 and the location accuracy 28&ndash;40%; on the 31
+    changes where the entity is referred to by a pronoun or another word, the probes do better (AUC 0.76&ndash;0.82),
+    and on the 20 doubtful ones worse (0.56&ndash;0.68), which is what one would expect if many of those labels are
+    wrong.</p>
+  <figure>
+    <img src="results/figures/explicit_implicit.png" alt="Explicit and implicit changes">
+    <p class="caption"><b>Figure 2.</b> Location accuracy on instances whose state changes, by whether the entity is
+      named in the step. The previous-location baseline is 0 on all of them by definition and is left out. On bAbI the
+      most-recent-location baseline is right on every implicit change by construction (Section 3.5).</p>
+  </figure>
+  <p>On bAbI the explicit/implicit contrast looks different because the tasks differ: an explicit change in bAbI is an
+    object being picked up, an implicit one its carrier moving. Location accuracy is about the same for both
+    (Table 5), and the change AUC is high on implicit instances (0.84&ndash;0.92). The harder test is binding (Table 5,
+    right): when someone moves, does the probe move only the objects that person carries? Here the 160M probe is weak
+    (AUC 0.64) and the 410M and 1B probes clearly better (0.79 and 0.80), but location accuracy on these steps stays at
+    26&ndash;30%, no better than the most-recent-location heuristic and far below keeping the previous location (84%),
+    because the probes rarely pick the right room in the first place.</p>
+  <!-- BEGIN:babi -->
+<table><thead><tr><th></th><th colspan="2">location acc., changed</th><th colspan="3">location acc., someone else moves</th><th></th></tr><tr><th></th><th>explicit (374)</th><th>implicit (683)</th><th>carried (566)</th><th>not carried (2905)</th><th>both (3471)</th><th>change AUC</th></tr></thead><tbody>
+<tr><td>Majority</td><td>1.9 <span class="ci">1&ndash;3</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>&ndash;</td></tr>
+<tr><td>Previous location (gold)</td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>0.0 <span class="ci">0&ndash;0</span></td><td>100.0 <span class="ci">100&ndash;100</span></td><td>83.7 <span class="ci">82&ndash;85</span></td><td>&ndash;</td></tr>
+<tr><td>Most recent location</td><td>51.3 <span class="ci">46&ndash;56</span></td><td>100.0 <span class="ci">100&ndash;100</span></td><td>100.0 <span class="ci">100&ndash;100</span></td><td>15.9 <span class="ci">15&ndash;17</span></td><td>29.6 <span class="ci">28&ndash;32</span></td><td>&ndash;</td></tr>
+<tr class="sep"><td>Probe 160M</td><td>39.6 <span class="ci">35&ndash;44</span></td><td>39.5 <span class="ci">35&ndash;44</span></td><td>41.5 <span class="ci">37&ndash;46</span></td><td>27.0 <span class="ci">24&ndash;30</span></td><td>29.4 <span class="ci">27&ndash;32</span></td><td>64.4 <span class="ci">62&ndash;67</span></td></tr>
+<tr><td>Probe 410M</td><td>33.7 <span class="ci">29&ndash;39</span></td><td>41.1 <span class="ci">37&ndash;45</span></td><td>42.6 <span class="ci">38&ndash;47</span></td><td>23.1 <span class="ci">21&ndash;26</span></td><td>26.2 <span class="ci">24&ndash;29</span></td><td>79.0 <span class="ci">77&ndash;81</span></td></tr>
+<tr><td>Probe 1B</td><td>43.6 <span class="ci">38&ndash;49</span></td><td>41.7 <span class="ci">38&ndash;46</span></td><td>45.1 <span class="ci">40&ndash;49</span></td><td>26.8 <span class="ci">24&ndash;30</span></td><td>29.8 <span class="ci">27&ndash;33</span></td><td>80.1 <span class="ci">78&ndash;82</span></td></tr>
+<tr class="sep"><td>Fine-tuned 160M</td><td>33.7 <span class="ci">30&ndash;38</span></td><td>32.0 <span class="ci">29&ndash;35</span></td><td>34.5 <span class="ci">31&ndash;38</span></td><td>26.5 <span class="ci">24&ndash;29</span></td><td>27.8 <span class="ci">25&ndash;30</span></td><td>71.3 <span class="ci">69&ndash;74</span></td></tr>
+</tbody></table>
+<!-- END:babi -->
+  <p class="caption"><b>Table 5.</b> bAbI test. Left: location accuracy on instances whose state changes. Middle: steps in
+    which someone moves while an object that is not named has a known location; the object moves if the mover carries it
+    and stays otherwise. Right: change AUC on those steps.</p>
+
+  <h3>4.3&nbsp;&nbsp;Model size and fine-tuning (RQ3)</h3>
+  <p>Figure 3 puts the two measures of implicit state against model size. On ProPara, the change AUC on implicit
+    instances is flat from 160M to 2.8B (0.72, 0.74, 0.71, 0.70, 0.72), while location accuracy on implicit changes rises
+    slowly from 28.7 to 38.3 with overlapping intervals. On bAbI the change AUC rises from 160M (0.84) to 410M (0.91) and
+    then levels off, and location accuracy stays at about 40%.</p>
+  <p>Fine-tuning the whole model on the same inputs (Table 6; the two seeds differ by at most 1.6 points in overall
+    location accuracy and by up to 6 points on implicit changes) improves location accuracy over all ProPara instances
+    by 7.8 points at 160M (interval 3.3&ndash;12.4) and 5.3 at 410M (2.2&ndash;8.8), mostly on explicit changes (160M:
+    40.1 to 54.7; 410M: 45.9 to 62.7). On implicit instances it does not separate changed from unchanged entities
+    better than the probe on the same model: the change AUC within implicit instances is 2.0 points lower at 160M
+    (&minus;6.9 to +3.2) and 5.9 points lower at 410M (&minus;11.5 to &minus;0.7). Fine-tuning mainly shifts
+    the decision threshold: the fine-tuned 160M model predicts a change for 11% of the implicit changes, compared to only
+    2% for the probe, raising its change macro-F1 on implicit instances by 6.7 points (1.9&ndash;11.7) without adding
+    discriminative signal. Location accuracy on implicit changes is within 2 points of the probe at both sizes, with intervals of about
+    &plusmn;10. Every probe on a trained model has a higher change AUC than both fine-tuned models (85.6&ndash;86.9
+    against 83.9 and 84.8, Table 2) and the probes from 410M up a similar change F1 (60.9&ndash;64.4 against 60.1 and
+    62.7), while the fine-tuned 410M model has the best location accuracy of all systems that are not given the gold
+    state (63.9).</p>
+  <p>Comparing the two sizes tests the second half of the hypothesis directly. Fine-tuning's advantage over the probe
+    is smaller at 410M than at 160M on every measure of implicit state: by 2.3 points for location accuracy on implicit
+    instances (&minus;7.7 to +2.8), 3.8 for change AUC (&minus;10.6 to +2.6) and 4.6 for change macro-F1 (&minus;9.6 to
+    &minus;0.2); only the last interval excludes zero. On bAbI, where only 160M was fine-tuned, fine-tuning is 2 to 3
+    points better than the probe on overall location accuracy and change AUC, also within implicit instances (AUC
+    +3.4, 1.9&ndash;4.8), but worse on location for implicit changes (&minus;7.5, &minus;11.6 to &minus;3.6).</p>
+  <figure>
+    <img src="results/figures/size.png" alt="Scores against model size">
+    <p class="caption"><b>Figure 3.</b> Implicit instances against model size: change AUC within implicit instances
+      (left) and location accuracy on implicit changes (right), with 95% intervals (band) for the probes and the
+      fine-tuned models (squares, drawn slightly to the right). Horizontal lines: baselines and chance.</p>
+  </figure>
+  <!-- BEGIN:finetune -->
+<table><thead><tr><th></th><th>model</th><th>seed</th><th>epoch kept</th><th>dev score</th><th>test location acc.</th><th>location acc., implicit changes</th></tr></thead><tbody>
+<tr><td>ProPara</td><td>160M</td><td>0</td><td>5 of 5</td><td>60.4</td><td>58.3</td><td>31.9</td></tr>
+<tr><td></td><td></td><td>1</td><td>5 of 5</td><td>62.1</td><td>58.7</td><td>29.8</td></tr>
+<tr><td></td><td>410M</td><td>0</td><td>5 of 5</td><td>65.9</td><td>64.1</td><td>30.9</td></tr>
+<tr><td></td><td></td><td>1</td><td>5 of 5</td><td>65.1</td><td>63.8</td><td>33.0</td></tr>
+<tr class="sep"><td>bAbI task 2</td><td>160M</td><td>0</td><td>3 of 3</td><td>64.4</td><td>58.7</td><td>35.0</td></tr>
+<tr><td></td><td></td><td>1</td><td>3 of 3</td><td>64.5</td><td>57.1</td><td>29.0</td></tr>
+</tbody></table>
+<!-- END:finetune -->
+  <p class="caption"><b>Table 6.</b> Each fine-tuning run: the epoch kept (best on the development split), its
+    development score (mean of change macro-F1 and location accuracy), and its test location accuracy on all instances
+    and on implicit changes. The other tables average the predictions of the two seeds.</p>
+
+  <h2>5&nbsp;&nbsp;Discussion</h2>
+  <p><b>Is the information there?</b> Yes, partly. A linear read-out of the frozen states recovers the state change and
+    location far better than the same read-out on an untrained network, and better than a control task that can only
+    memorise names, so the results are not an artefact of the probe. The exception is location in the two smallest
+    models, where the probe beats the control by only 7 points, so much of what it does there could come from the
+    place names alone. For implicit changes the answer is weaker. The change AUC of about 0.72
+    on ProPara means that a changed entity gets a higher change probability than an unchanged one in about seven cases
+    out of ten, compared with eight out of ten when the entity is named and five out of ten by chance. That is enough to
+    rank cases but not to decide them: implicit changes are rare (8% of implicit training instances), and at that base
+    rate the probes almost never put a change above NONE. Accuracy alone would have said the information is absent; the
+    AUC says it is present but weak.</p>
+  <p><b>Was the hypothesis right?</b> Only in part. The probes carry information about implicit changes (AUC
+    0.70&ndash;0.74), beat the majority class in change macro-F1 on implicit instances from 410M up, and beat it in
+    location accuracy on implicit changes at 1.4B and 2.8B. But in location accuracy over all implicit instances they
+    are no better than always answering that the entity does not exist, and on implicit changes the
+    most-recent-location heuristic is better, although it fails on almost everything else. The previous-location
+    baseline, which no system reaches, is not a fair competitor: it is given the gold state before the step, which is
+    exactly what the probes have to track. The second part of the hypothesis, that the gap to fine-tuning shrinks with
+    size, holds in direction: fine-tuning's advantage on implicit instances is smaller at 410M than at 160M on every
+    measure, though clearly so only for change macro-F1, and two sizes make this a weak test. The gap was also never in
+    fine-tuning's favour where the study looks: on implicit instances fine-tuning moved the decision threshold but did
+    not rank changes better than the frozen probe. By the rejection criterion of the hypothesis (probes at baseline on
+    implicit instances while the fine-tuned model is clearly better), the hypothesis is not rejected; but the
+    expectation that larger models represent implicit changes better is not supported on ProPara.</p>
+  <p><b>Why would implicit changes not improve with size?</b> The larger models improve on what the text says
+    (explicit changes, and picking the place among candidates), while the implicit signal stays at the same level from
+    160M to 2.8B. One reading is that this signal comes from cues that even the smallest model picks up, such as a step
+    naming a new place or a verb of transformation, rather than from tracking the entity through the process. The
+    manual reading supports this: the probes do best on implicit changes where the entity is still referred to by a
+    pronoun or another word, worst on the doubtful ones, and in between on genuine inferences, which are the cases the
+    study is about. bAbI points in the same direction for binding: the probes know that a move happened but only the
+    410M and 1B models separate the carried objects from the others well, and none of them can tell which room it is.
+    This agrees with Prakash et al. (2024) in that fine-tuning, at either size, sharpened what the model already did
+    (locating entities the text names) rather than adding a new ability, and with Kim and Schuster (2023) in that
+    tracking which entity is where is hard for models of this size.</p>
+
+  <h2>6&nbsp;&nbsp;Conclusion</h2>
+  <p>Pretrained Pythia models represent entity states and locations well enough for linear probes to recover them, a
+    signal originating in pretraining. But when a step omits the entity, that signal weakens substantially: it does
+    not scale from 160M to 2.8B parameters, and its raw accuracy barely beats simple baselines. Fine-tuning at 160M and
+    410M improved location for named entities, yet added no real information about implicit changes. For systems that plan
+    from text, a cheap probe on a frozen model suffices for explicit states, but implicit states require more than scaling
+    within this parameter regime. For evaluation, ProPara's implicit changes warrant caution: only about half in the
+    test set reflect genuine physical inferences, while a fifth stem from annotation noise.</p>
+  <p><b>Sources of error and what I would do differently.</b> The ProPara test set has only 94 implicit changes (43
+    genuine), so many intervals are wide. The explicit/implicit split is a string match on head nouns, which misses
+    pronouns and synonyms; my manual reading corrects this for the test set only, and was done by one person.
+    Fine-tuning covers two sizes with two seeds each; the 410M model was still improving slightly on the development
+    set at its fifth and last epoch, so its numbers may be a slight underestimate, and two sizes make the size trend of
+    the gap a weak test. On bAbI I only probed up to 1B and fine-tuned only 160M. The probes are linear and read one token's state with one fixed template; Li et al. (2023) needed non-linear
+    probes for Othello, so a linear probe gives a lower bound. Finally, ProPara and bAbI may be in the Pile, which would
+    flatter all results equally.</p>
+  <p><b>Future work.</b> The motivation asked whether information is missing from the model or only from its answers; I
+    measured the first but not the second, and the obvious next step is to ask the same models directly (prompting) and
+    compare their answers with the probes. Causal interventions on the probed directions (Li et al., 2023) would show
+    whether the models use the information. The location probe could score '&minus;' and '?' as statements of their
+    own (<span class="mono">The seed does not exist.</span>) in one softmax with the candidates, instead of relying on
+    the separate existence probe that limits it now. A cleaned set of implicit changes across all splits, or OpenPI
+    (Tandon et al., 2020), whose open vocabulary of states would also test changes other than location, would make the
+    implicit comparison more reliable.</p>
+
+  <h2>References</h2>
+  <p class="ref">Belinkov, Y. (2022). Probing classifiers: Promises, shortcomings, and advances. <i>Computational
+      Linguistics</i>, 48(1), 207-219.</p>
+  <p class="ref">Bender, E. M. and Friedman, B. (2018). Data statements for natural language processing: Toward
+    mitigating system bias and enabling better science. <i>Transactions of the Association for Computational
+      Linguistics</i>, 6, 587-604.</p>
+  <p class="ref">Biderman, S. et al. (2023). Pythia: A suite for analyzing large language models across training and
+    scaling. In <i>Proceedings of ICML 2023</i>.</p>
+  <p class="ref">Dalvi, B., Huang, L., Tandon, N., Yih, W. and Clark, P. (2018). Tracking state changes in procedural
+    text: A challenge dataset and models for process paragraph comprehension. In <i>Proceedings of NAACL-HLT 2018</i>.
+  </p>
+  <p class="ref">Dettmers, T., Lewis, M., Shleifer, S. and Zettlemoyer, L. (2022). 8-bit optimizers via block-wise
+    quantization. In <i>Proceedings of ICLR 2022</i>.</p>
+  <p class="ref">Dro&#380;d&#380;, K. and Heilbron, M. (2026). Entity tracking emerges in sub-billion parameter language
+    models and exceeds human performance in naturalistic narratives. <i>arXiv:2608.18083</i>.</p>
+  <p class="ref">Efron, B. and Tibshirani, R. J. (1993). <i>An Introduction to the Bootstrap</i>. Chapman and Hall.</p>
+  <p class="ref">Gao, L. et al. (2020). The Pile: An 800GB dataset of diverse text for language modeling.
+    <i>arXiv:2101.00027</i>.</p>
+  <p class="ref">Hewitt, J. and Liang, P. (2019). Designing and interpreting probes with control tasks. In
+    <i>Proceedings of EMNLP-IJCNLP 2019</i>.</p>
+  <p class="ref">Kim, N. and Schuster, S. (2023). Entity tracking in language models. In <i>Proceedings of ACL
+      2023</i>.</p>
+  <p class="ref">Li, B. Z., Nye, M. and Andreas, J. (2021). Implicit representations of meaning in neural language
+    models. In <i>Proceedings of ACL-IJCNLP 2021</i>.</p>
+  <p class="ref">Li, K., Hopkins, A. K., Bau, D., Vi&eacute;gas, F., Pfister, H. and Wattenberg, M. (2023). Emergent
+    world representations: Exploring a sequence model trained on a synthetic task. In <i>Proceedings of ICLR 2023</i>.
+  </p>
+  <p class="ref">Loshchilov, I. and Hutter, F. (2019). Decoupled weight decay regularization. In <i>Proceedings of ICLR
+      2019</i>.</p>
+  <p class="ref">Marks, S. and Tegmark, M. (2024). The geometry of truth: Emergent linear structure in large language
+    model representations of true/false datasets. In <i>Proceedings of COLM 2024</i>.</p>
+  <p class="ref">Prakash, N., Rott Shaham, T., Haklay, T., Belinkov, Y. and Bau, D. (2024). Fine-tuning enhances
+    existing mechanisms: A case study on entity tracking. In <i>Proceedings of ICLR 2024</i>.</p>
+  <p class="ref">Rajaby Faghihi, H. and Kordjamshidi, P. (2021). Time-stamped language model: Teaching language models
+    to understand the flow of events. In <i>Proceedings of NAACL-HLT 2021</i>.</p>
+  <p class="ref">Sun, M., Chen, X., Kolter, J. Z. and Liu, Z. (2024). Massive activations in large language models. In
+    <i>Proceedings of COLM 2024</i>.</p>
+  <p class="ref">Tandon, N., Dalvi, B., Grus, J., Yih, W., Bosselut, A. and Clark, P. (2018). Reasoning about actions
+    and state changes by injecting commonsense knowledge. In <i>Proceedings of EMNLP 2018</i>.</p>
+  <p class="ref">Tandon, N. et al. (2020). A dataset for tracking entities in open domain procedural text. In
+    <i>Proceedings of EMNLP 2020</i>.</p>
+  <p class="ref">Toshniwal, S., Wiseman, S., Livescu, K. and Gimpel, K. (2022). Chess as a testbed for language model
+    state tracking. In <i>Proceedings of AAAI 2022</i>.</p>
+  <p class="ref">Weston, J., Bordes, A., Chopra, S., Rush, A. M., van Merri&euml;nboer, B., Joulin, A. and Mikolov, T.
+    (2016). Towards AI-complete question answering: A set of prerequisite toy tasks. In <i>Proceedings of ICLR 2016</i>.
+  </p>
+
+</body>
+
+</html>
