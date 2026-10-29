@@ -16,8 +16,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
-import torch
-from torchvision import models
+try:
+    import torch
+    from torchvision import models
+except ImportError:
+    torch = None  # type: ignore
+    models = None  # type: ignore
 
 
 load_dotenv()
@@ -201,6 +205,11 @@ GRADE_MATTEBOKEN_URLS: dict[str, str] = {
     "Grade 5": "https://www.matteboken.se/lektioner/mellanstadiet/skolar-5",
     "Grade 6": "https://www.matteboken.se/lektioner/mellanstadiet/skolar-6",
 }
+DEFAULT_GRADE_TOPICS: dict[str, tuple[str, ...]] = {
+    "Grade 4": ("Taluppfattning och tals användning", "Addition och subtraktion", "Multiplikation och division", "Geometri", "Bråk", "Mätning"),
+    "Grade 5": ("Tal i decimalform", "Bråkform och procent", "Prioriteringsregler", "Ekvationer", "Geometriska figurer", "Statistik"),
+    "Grade 6": ("Procent och sannolikhet", "Negativa tal", "Algebra och mönster", "Koordinatsystem", "Skala och vinklar", "Area och omkrets"),
+}
 MATTEBOKEN_TOPIC_CACHE: dict[str, tuple[str, ...]] = {}
 
 CNN_READY = False
@@ -209,15 +218,18 @@ CNN_MODEL: Any = None
 CNN_PREPROCESS: Any = None
 CNN_LABELS: list[str] = []
 
-try:
-    cnn_weights = models.ResNet18_Weights.DEFAULT
-    CNN_MODEL = models.resnet18(weights=cnn_weights)
-    CNN_MODEL.eval()
-    CNN_PREPROCESS = cnn_weights.transforms()
-    CNN_LABELS = list(cnn_weights.meta.get("categories", []))
-    CNN_READY = True
-except Exception as exc:
-    CNN_INIT_ERROR = str(exc)
+if torch is not None and models is not None:
+    try:
+        cnn_weights = models.ResNet18_Weights.DEFAULT
+        CNN_MODEL = models.resnet18(weights=cnn_weights)
+        CNN_MODEL.eval()
+        CNN_PREPROCESS = cnn_weights.transforms()
+        CNN_LABELS = list(cnn_weights.meta.get("categories", []))
+        CNN_READY = True
+    except Exception as exc:
+        CNN_INIT_ERROR = str(exc)
+else:
+    CNN_INIT_ERROR = "torch and torchvision are not installed" 
 
 
 def normalize_answer(raw: str) -> str:
@@ -380,16 +392,18 @@ def get_grade_topic_hints(grade: str) -> tuple[str, ...]:
 
     try:
         request = Request(source_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urlopen(request, timeout=8) as response:
+        with urlopen(request, timeout=4) as response:
             html = response.read().decode("utf-8", errors="ignore")
         extracted = _extract_topics_from_matteboken_html(html)
-        if len(extracted) < 4:
-            raise RuntimeError(f"Too few topics extracted from Matteboken for {grade}")
+        if len(extracted) >= 4:
+            MATTEBOKEN_TOPIC_CACHE[grade] = extracted
+            return extracted
     except Exception as exc:
-        raise RuntimeError(f"Failed to fetch Matteboken topics for {grade}: {exc}") from exc
+        print(f"Notice: could not fetch Matteboken topics online for {grade} ({exc}). Using default curriculum topics.")
 
-    MATTEBOKEN_TOPIC_CACHE[grade] = extracted
-    return extracted
+    fallback = DEFAULT_GRADE_TOPICS.get(grade, ())
+    MATTEBOKEN_TOPIC_CACHE[grade] = fallback
+    return fallback
 
 
 def to_card_model(card: CardData) -> Card:
@@ -759,6 +773,9 @@ class GameStore:
     def create_session(self, grade: str) -> SessionState:
         if grade not in GRADE_MATTEBOKEN_URLS:
             raise HTTPException(status_code=400, detail="Unknown grade")
+        if len(self.sessions) >= 500:
+            oldest_key = next(iter(self.sessions))
+            self.sessions.pop(oldest_key, None)
         session_id = str(uuid.uuid4())
         enemy_hp = 40
         session = SessionState(

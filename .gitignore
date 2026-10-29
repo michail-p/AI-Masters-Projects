@@ -1,0 +1,60 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Bytecode and build artifacts
+__pycache__/
+*.py[cod]
+*.class
+*.so
+target/
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE and editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+work/features/
+work/logs/
+mlflow.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Large model weights and binary checkpoints
+*.pt
+*.h5
+*.keras
+*.joblib
+*.npz
+
+# Archives and media
+*.tar.gz
+*.rar
+*.mp4
+
+# Generated synthetic datasets and large HTML drift reports
+Data Privacy 3/outputs/synthetic/
+reports/*.html
+MLOps-Pipeline/reports/*.html

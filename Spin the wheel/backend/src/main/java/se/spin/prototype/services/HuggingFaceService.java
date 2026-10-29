@@ -36,6 +36,15 @@ public class HuggingFaceService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final WebClient webClient = WebClient.builder().build();
 
+    private String getAuthToken() {
+        String token = getAuthToken();
+        if (token == null || token.isBlank()) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE, "HUGGINGFACE_API_TOKEN is not configured");
+        }
+        return token;
+    }
+
+
 
     private String buildStoryPrompt(SpinArguments arguments, String seedText) {
 
@@ -77,7 +86,7 @@ public class HuggingFaceService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
-        headers.setBearerAuth(EnvUtil.get("HUGGINGFACE_API_TOKEN"));
+        headers.setBearerAuth(getAuthToken());
         headers.add("X-Router-Provider", "nscale");
         
         try {
@@ -128,7 +137,7 @@ public class HuggingFaceService {
             .headers(h -> {
                 h.setContentType(MediaType.APPLICATION_JSON);
                 h.setAccept(List.of(MediaType.TEXT_EVENT_STREAM, MediaType.ALL));
-                h.setBearerAuth(EnvUtil.get("HUGGINGFACE_API_TOKEN"));
+                h.setBearerAuth(getAuthToken());
                 h.add("X-Router-Provider", "nscale");
             })
             .bodyValue(payload)
@@ -177,7 +186,7 @@ public class HuggingFaceService {
             .headers(h -> {
                 h.setContentType(MediaType.APPLICATION_JSON);
                 h.setAccept(List.of(MediaType.TEXT_EVENT_STREAM, MediaType.ALL));
-                h.setBearerAuth(EnvUtil.get("HUGGINGFACE_API_TOKEN"));
+                h.setBearerAuth(getAuthToken());
                 h.add("X-Router-Provider", "nscale");
             })
             .bodyValue(payload)
@@ -207,7 +216,7 @@ public class HuggingFaceService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
-        headers.setBearerAuth(EnvUtil.get("HUGGINGFACE_API_TOKEN"));
+        headers.setBearerAuth(getAuthToken());
         headers.add("X-Router-Provider", "nscale");
         
         try {

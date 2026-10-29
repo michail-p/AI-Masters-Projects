@@ -12,7 +12,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from PIL import Image
 
 # Configuration
-DATA_DIR = '/import/course/5dv236/vt26/AffectNet'
+DATA_DIR = os.getenv("AFFECTNET_DATA_DIR", "/import/course/5dv236/vt26/AffectNet")
 OUTPUT_DIR = os.path.expanduser('~/workspace/lab3_output')
 CLASSES = ['Happy', 'Sad', 'Surprised', 'Mad']
 NUM_CLASSES = len(CLASSES)

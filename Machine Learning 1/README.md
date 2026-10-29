@@ -16,7 +16,7 @@ The assignment applies and compares common machine learning models using scikit-
 
 ## Files
 
-- `Michail_Pettas.ipynb` – Main notebook with all tasks, code, and answers
+- `notebook.ipynb` – Main notebook with all tasks, code, and answers
 - `feature_importance.png` – Generated plot used in the analysis
 
 ## Tech Stack
@@ -29,7 +29,7 @@ The assignment applies and compares common machine learning models using scikit-
 
 ## How to Run
 
-1. Open `Michail_Pettas.ipynb` in Jupyter Notebook or VS Code.
+1. Open `notebook.ipynb` in Jupyter Notebook or VS Code.
 2. Install missing dependencies if needed:
    - `pip install pandas numpy scikit-learn matplotlib seaborn`
 3. Run cells from top to bottom.

@@ -49,9 +49,9 @@ def load_model():
     mlflow.set_tracking_uri(tracking_uri)
     
     try:
-        model_name = "CustomerChurnXGB"
-        # Since we just re-initialized the DB, the model is version 1
-        model_uri = f"models:/{model_name}/1"
+        model_name = os.getenv("MLFLOW_MODEL_NAME", "CustomerChurnXGB")
+        model_version = os.getenv("MLFLOW_MODEL_VERSION", "1")
+        model_uri = f"models:/{model_name}/{model_version}"
         model = mlflow.sklearn.load_model(model_uri)
         
         le_path = "models/label_encoders.joblib"
@@ -79,6 +79,12 @@ def predict(data: CustomerData):
         df = pd.DataFrame([data.dict()])
         for col, le in le_dict.items():
             if col in df.columns and col != "churn":
+                val = df[col].iloc[0]
+                if val not in le.classes_:
+                    raise HTTPException(
+                        status_code=422,
+                        detail=f"Unrecognized value '{val}' for '{col}'. Expected one of: {list(le.classes_)}"
+                    )
                 df[col] = le.transform(df[col])
         
         prediction = model.predict(df)[0]

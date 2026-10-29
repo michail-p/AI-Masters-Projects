@@ -183,35 +183,35 @@ class AlphaBeta(OthelloAlgorithm):
 
         if maximizing_player:
             max_eval = -math.inf
-            evaluated_any = False
+            completed = True
             for move in moves:
                 if self.time_up():
+                    completed = False
                     break
                 new_position = position.make_move(move)
                 eval_score = self.minimax(new_position, depth - 1, alpha, beta, False)
-                evaluated_any = True
                 max_eval = max(max_eval, eval_score)
                 alpha = max(alpha, eval_score)
                 if beta <= alpha:
                     self._update_history(move, maximizing_player, depth)
                     break
-            if evaluated_any:
+            if completed:
                 self._store_transposition(key, max_eval)
             return max_eval
         else:
             min_eval = math.inf
-            evaluated_any = False
+            completed = True
             for move in moves:
                 if self.time_up():
+                    completed = False
                     break
                 new_position = position.make_move(move)
                 eval_score = self.minimax(new_position, depth - 1, alpha, beta, True)
-                evaluated_any = True
                 min_eval = min(min_eval, eval_score)
                 beta = min(beta, eval_score)
                 if beta <= alpha:
                     self._update_history(move, maximizing_player, depth)
                     break
-            if evaluated_any:
+            if completed:
                 self._store_transposition(key, min_eval)
             return min_eval

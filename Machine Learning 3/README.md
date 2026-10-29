@@ -14,7 +14,7 @@ This project focuses on **human activity recognition (HAR)** using the UCI Human
 
 ## Files
 
-- `Michail_Pettas_Sergio_Costa.ipynb` - Main notebook with the full assignment pipeline, experiments, and analysis
+- `notebook.ipynb` - Main notebook with the full assignment pipeline, experiments, and analysis
 - `assignment_3_report_template_vt26.tex` - LaTeX source for the written report
 - `report.pdf` - Final report in PDF format
 
@@ -29,7 +29,7 @@ This project focuses on **human activity recognition (HAR)** using the UCI Human
 
 ## How to Run
 
-1. Open `Michail_Pettas_Sergio_Costa.ipynb` in Jupyter Notebook or VS Code.
+1. Open `notebook.ipynb` in Jupyter Notebook or VS Code.
 2. Install missing dependencies if needed:
    - `pip install pandas numpy scikit-learn matplotlib seaborn tensorflow`
 3. Run the notebook cells from top to bottom.

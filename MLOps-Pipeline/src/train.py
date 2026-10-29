@@ -38,7 +38,8 @@ def train():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     # 3. MLflow Tracking
-    mlflow.set_tracking_uri("http://localhost:5000")
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
+    mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment("Customer_Churn_Prediction")
     
     with mlflow.start_run():

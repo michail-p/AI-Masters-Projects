@@ -34,7 +34,7 @@ model_output_path = "affectnet_emotion_cnn.keras"
 best_model_output_path = "affectnet_emotion_cnn_best.keras"
 
 # Directory where the data are stored
-data_dir = "/import/course/5dv236/vt26/AffectNet/"
+data_dir = os.getenv("AFFECTNET_DATA_DIR", "/import/course/5dv236/vt26/AffectNet/")
 print(f"Loading data from {data_dir}")
 
 # Set seeds for reproducibility

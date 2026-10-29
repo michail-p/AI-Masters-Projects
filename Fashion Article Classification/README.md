@@ -18,8 +18,8 @@ This project implements classification of fashion articles from the [Fashion-MNI
 
 ```
 ML - Fashion Article Classification/
-├── assignment-classification-5.ipynb   # Main Jupyter notebook
-└── report.tex                          # LaTeX report
+├── notebook.ipynb   # Main Jupyter notebook
+└── report.pdf                          # LaTeX report
 ```
 
 ---
@@ -80,7 +80,7 @@ Multilayer perceptron with:
 
 ### Running the Notebook
 
-1. Open `assignment-classification-5.ipynb` in Jupyter/VS Code
+1. Open `notebook.ipynb` in Jupyter/VS Code
 2. Select appropriate Python kernel
 3. Run cells sequentially
 

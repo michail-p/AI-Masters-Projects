@@ -47,8 +47,11 @@ def test_predict_valid_data():
         "tech_support": "No"
     }
     response = client.post("/predict", json=payload)
+    assert response.status_code in [200, 503]
     if response.status_code == 200:
         data = response.json()
         assert "churn_prediction" in data
         assert "churn_probability" in data
         assert isinstance(data["churn_probability"], float)
+    else:
+        assert response.json()["detail"] == "Model not loaded"
